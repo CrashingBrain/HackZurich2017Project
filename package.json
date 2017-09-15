@@ -1,0 +1,19 @@
+{
+  "name": "hackzurich2017project",
+  "version": "1.0.0",
+  "description": "Reuters news forum rooms aggregator thing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrashingBrain/HackZurich2017Project.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CrashingBrain/HackZurich2017Project/issues"
+  },
+  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project#readme"
+}
