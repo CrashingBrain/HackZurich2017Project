@@ -42,7 +42,7 @@
     </div>
 
     <template is="dom-repeat" items="{{newsitems}}">
-        <div class="news-article">{{_getDOMFromXHTML(item.body_xhtml)}}</div>
+        <div class="news-article">{{_getTextFromXHTML(item.body_xhtml)}}</div>
     </template>
 
   </template>
@@ -72,14 +72,14 @@
 
       ready: function() {},
 
-      _getDOMFromXHTML: function(htmlstring) {
+      _getTextFromXHTML: function(htmlstring) {
         // var parser = new DOMParser();
         // var wrappedstring = "<div>" + htmlstring + "</div>";
         // dom = parser.parseFromString(wrappedstring, "text/xml");
-        var div = document.createElement('DIV');
-        div.innerHTML = htmlstring;
-        console.log(div);
-        return div.innerHTML;
+        var one = htmlstring.replace(/<p>/gi, "");
+        var two = one.replace(/<\/p>/gi, "\n");
+        console.log(two);
+        return two;
       },
     });
   </script>
