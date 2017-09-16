@@ -1,5 +1,5 @@
 /*  API utils */
-/* 
+/*
 * functions to get stuff from the API
 */
 
@@ -44,18 +44,17 @@
 	/*
 		Returns array of entities(names) from an entities object as result from a call of XMLRequest as JSON
 	*/
-
 	module.exports.getEntitiesNames = function(entitiesData){
 		var names = [];
-		for (var i = entitiesData.items[0].entities.length - 1; i >= 0; i--) {
-			if(entitiesData.items[0].entities[i].vtype === "ENTITY") {
-				names.push(entitiesData.items[0].entities[i].name);
+		for (let entity of entitiesData.items[0].entities) {
+			if(entity.vtype === "ENTITY") {
+				names.push(entity.name);
 			}
 		}
 		return names;
 	}
 
-	/* Given an Item Id performs request for its entities 
+	/* Given an Item Id performs request for its entities
 	returns array of entities
 	*/
 	module.exports.doEntitiesRequest = function(itemId, callback){
