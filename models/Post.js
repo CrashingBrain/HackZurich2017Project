@@ -13,17 +13,20 @@
 'use strict';
 const mongoose = require('mongoose');
 const ObjectID = mongoose.Schema.Types.ObjectId;
-require ('./Room'); 
+require ('./Room');
 
 const Post = exports.Claim = new mongoose.Schema({
   username :        { type : String, default : "anon" },
   message :         { type : String, required : true },
   date :            { type : Date, default : Date.now() },
-  room :            { type : ObjectID,  ref: "Room" ,required : true }, 
+  room :            { type : ObjectID, ref: "Room", required : true },
   children :        [{ type : ObjectID, default : [] }],
 });
 
-Post.pre('save', function(next) {
+Post.post('validate', function(doc) {
+  if (doc.username === "anon") {
+    doc.username = "anon" + Math.floor(Math.random()*100000000000);
+  }
   next();
 });
 

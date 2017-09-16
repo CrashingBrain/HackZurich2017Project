@@ -1,0 +1,40 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/elements/nepeta-header.html"></link>
+<link rel="import" href="/elements/nepeta-news-data.html"></link>
+<link rel="import" href="/elements/nepeta-posts.html"></link>
+
+<!-- Outside style (?) -->
+<style is="custom-style" include="shared-style"></style>
+
+<dom-module id="nepeta-room">
+  <template>
+    <style is="custom-style" include="shared-style">
+      host: {
+        display: block;
+        width: 100%;
+      }
+    </style>
+
+    <nepeta-header></nepeta-header>
+
+    <nepeta-news-data></nepeta-news-data>
+    <nepeta-posts></nepeta-posts>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-room',
+
+      properties: {
+        room: {
+          type: Object,
+					value: {},
+        },
+      },
+    });
+  </script>
+</dom-module>

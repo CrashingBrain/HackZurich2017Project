@@ -1,0 +1,51 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+<link rel="import" href="nepeta-news-card.html">
+
+<dom-module id="nepeta-news">
+  <template>
+    <style include="shared-style">
+      :host {
+        display: block;
+        box-sizing: border-box;
+        position: relative;
+        left: 8%;
+        width: 970px;
+        margin: 0 auto !important;
+        padding: 0 0 10px 0;
+        text-align: center;
+      }
+
+      @media (max-width: 1270px) {
+        :host {
+          width: 700px;
+        }
+      }
+
+      @media (max-width: 900px) {
+        :host {
+          left: 0px;
+        }
+      }
+
+      @media (max-width: 700px) {
+        :host {
+          width: 400px;
+        }
+      }
+    </style>
+    <nepeta-news-card></nepeta-news-card>
+    <nepeta-news-card></nepeta-news-card>
+    <nepeta-news-card></nepeta-news-card>
+    <nepeta-news-card></nepeta-news-card>
+    <nepeta-news-card></nepeta-news-card>
+    <nepeta-news-card></nepeta-news-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-news'
+    });
+  </script>
+</dom-module>

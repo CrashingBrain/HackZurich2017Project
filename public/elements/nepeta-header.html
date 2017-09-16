@@ -1,0 +1,31 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+
+<dom-module id="nepeta-header">
+  <template>
+    <style include="shared-style" is="custom-style">
+      :host {
+        display: block;
+        height: 160px;
+      }
+
+      @media (max-width: 1100px) {
+        :host {
+          height: 210px;
+        }
+      }
+    </style>
+
+    <leftbar></leftbar>
+    <logo><img src="../images/dummyLogo.png" /></logo>
+    <rightbar></rightbar>
+    <content></content>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-header'
+    });
+  </script>
+</dom-module>

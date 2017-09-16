@@ -1,18 +1,17 @@
-<!DOCTYPE html>
 <html>
   <head>
     <title>Nepeta - News Aggregator</title>
 
     <meta charset="UTF-8">
 
-    <script src="webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="/webcomponentsjs/webcomponents-lite.js"></script>
     <script>
       window.Polymer = window.Polymer || {};
       window.Polymer.dom = 'shadow';
     </script>
 
     <!-- Polymer Components -->
-    <link rel="import" href="elements/nepeta-index.html"></link>
+    <link rel="import" href="/elements/nepeta-room.html"></link>
 
     <!-- Style -->
     <link rel="import" href="css/shared-style.html">
@@ -20,10 +19,11 @@
   </head>
 
   <body>
-    <nepeta-index></nepeta-index>
+
+    <nepeta-room room={room}></nepeta-room>
 
     <!-- Socket Client -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/socket-client.js"></script>
+    <script src="/js/socket-client.js"></script>
   </body>
 </html>

@@ -1,0 +1,33 @@
+{
+  "name": "Nepeta",
+  "description": "Aggregate Reuter's news in a forum",
+  "main": "app.js",
+  "authors": [
+    "Lara Bruseghini",
+    "Luca Dolfi",
+    "Aron Fiechter",
+    "Valerie Burgener"
+  ],
+  "license": "-",
+  "keywords": [
+    "News",
+    "Forum",
+    "Aggregator",
+    "Polymer",
+    "CSS",
+    "Variables",
+    "MongoDB"
+  ],
+  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0"
+  }
+}
