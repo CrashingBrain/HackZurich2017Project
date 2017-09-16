@@ -24,13 +24,11 @@
       <leftbar></leftbar>
       <logo><img src="images/dummyLogo.png" /></logo>
       <rightbar></rightbar>
-      <search>
-        <input placeholder="#"></input>
-      </search>
+      <nepeta-search></nepeta-search>
     </header>
 
     <div id="newsFlash">
-      <newscard><nepeta-search></nepeta-search></newscard>
+      <newscard></newscard>
       <newscard></newscard>
       <newscard></newscard>
       <newscard></newscard>
