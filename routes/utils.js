@@ -20,55 +20,48 @@ const Room = mongoose.model('Room');
 	 * @param {JSON} data The data in the JSON format to be sent to the server. It must be null if there are no data.
 	 * @param {Function} callback The function to call when the response is ready.
 	 */
-	module.exports.doJSONRequest = function doJSONRequest(method, url, headers, data, callback){
 
-	  //all the arguments are mandatory
-	  if(arguments.length != 5) {
-	    throw new Error('Illegal argument count');
-	  }
+	module.exports.doJSONRequest = function doJSONRequest(method, url, headers, data, callback) {
+    let request = new XMLHttpRequest();
+	request.open(method, url, true);
+	request.onreadystatechange = function() {
+		if (request.readyState === 4) {
+			switch (request.status) {
+				case 200:
+				case 201:
+					callback(JSON.parse(request.responseText));
+					break;
+				case 205:
+					callback(request.responseText);
+					break;
+				default:
+					console.log(request.status);
+					callback(request.status, true);
+			}
+		}
+	};
 
-	  doRequestChecks(method, true, data);
+	request.setRequestHeader("Accept", "application/json");
 
-	  //create an ajax request
-	  const r = new XMLHttpRequest();
-
-	  //open a connection to the server using method method on the url API
-	  r.open(method, url, true);
-
-	  //set the headers
-	  doRequestSetHeaders(r, method, headers);
-
-	  //wait for the response from the server
-	  r.onreadystatechange = function () {
-	    //correctly handle the errors based on the HTTP status returned by the called API
-	    if (r.readyState != 4 || (r.status != 200 && r.status != 201 && r.status != 204)){
-	      return;
-	    } else {
-	      if(isJSON(r.responseText))
-	        callback(JSON.parse(r.responseText));
-	      else {
-	      		parseString(r.responseText, function (err, result) {
-	      		    // console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
-	      	  		callback(result);
-	      		});
-	      }
-
-	    }
-	  };
-
-	  //set the data
-	  let dataToSend = null;
-	  if (!("undefined" == typeof data)
-	    && !(data === null))
-	    dataToSend = JSON.stringify(data);
-
-	  //console.log(dataToSend)
-
-	  //send the request to the server
-	  r.send(dataToSend);
-
-
+	// if header is null, do not set anything
+	if (headers != null && (method === "POST" || method === "PUT")) {
+		request.setRequestHeader("Content-Type", "application/json");
 	}
+
+	// add custom headers
+	if (headers) {
+    for (header in headers) {
+			request.setRequestHeader(`${header}`, `${headers[header]}`);
+		}
+  }
+
+	if(headers == null) {
+		request.send(data)
+	} else {
+		// send body data
+		request.send(JSON.stringify(data));
+	}
+}
 
 module.exports.areCommonEntities = function(item, newItem){
 
@@ -104,43 +97,6 @@ function isJSON(jsonString){
 	  return false;
 	}
 
-function doRequestSetHeaders(r, method, headers){
-
-	  //set the default JSON header according to the method parameter
-	  // r.setRequestHeader("Accept", "application/json");
-
-	  if(method === "POST" || method === "PUT"){
-	    r.setRequestHeader("Content-Type", "application/json");
-	  }
-
-	  //set the additional headers
-	  if (!("undefined" == typeof headers)
-	    && !(headers === null)){
-
-	    for(header in headers){
-	      //console.log("Set: " + header + ': '+ headers[header]);
-	      r.setRequestHeader(header,headers[header]);
-	    }
-
-	  }
-	}
-
-	function doRequestChecks(method, isAsynchronous, data){
-
-	  //verify the request method
-	  if(method!="GET" && method!="POST" && method!="PUT" && method!="DELETE") {
-	    throw new Error('Illegal method: ' + method + ". It should be one of: GET, POST, PUT, DELETE.");
-	  }
-
-	  //verify the data parameter
-	  if (!("undefined" == typeof data)
-	    && !(data === null))
-	    if(!canJSON(data)) {
-	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
-	    }
-	  }
-
-
 // utility for tags
 Array.prototype.byCount= function(){
     var itm, a= [], L= this.length, o= {};
@@ -157,7 +113,7 @@ Array.prototype.byCount= function(){
 }
 
 // we store the ids of all news items we have in the db also in the `newsItems` object for efficient lookup, no need to query db
-const newsItems = {}; // newsItemID : roomID
+const newsItems = {}; // newsItemID : {room, version}
 
 // loads all news items from all rooms into newsItems
 module.exports.seedNewsItems = () => {
@@ -166,27 +122,27 @@ module.exports.seedNewsItems = () => {
       console.log("error finding rooms: " + err);
     } else if (room && room.items) {
       for(let newsItem of room.items)
-        newsItem[newsItem.id[0]] = room._id;
+        newsItem[newsItem.uri] = room._id;
     }
   });
 }
 
-module.exports.isDuplicateNewsItem = (newsItemID) => {
+module.exports.getDuplicateNewsItem = (newsItemID) => {
   return newsItems[newsItemID];
 }
 
 module.exports.openRoom = (newsItem) => {
   let room = new Room(newsItem);
   room.items = [newsItem];
-  console.log('saving', newsItem);
 
   room.save(function(err, saved) {
     if (err) {
       console.log(err);
     }
     else {
-      newsItems[newsItem.id[0]] = saved._id;
-      console.log(saved);
+      newsItems[newsItem.uri] = { room: saved._id,
+                                  version: newsItem.version };
+      console.log('saved news item:', saved.headline, newsItem.uri);
     }
   });
 }
