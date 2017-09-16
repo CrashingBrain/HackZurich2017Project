@@ -14,7 +14,9 @@
     <style is="custom-style" include="shared-style">
       :host {
         display: block;
-        flex: 1;
+        flex: 0 0 50%;
+        width: 50%;
+        max-width: 50%;
         background-color: blue;
         color: yellow;
       }
@@ -39,7 +41,7 @@
 
     <div id="wrapper">
       <div id="new-post">
-        <paper-input id="username" label="username"></paper-input>
+        <paper-input id="username" label="username (optional)"></paper-input>
         <paper-textarea id="message" label="message"></paper-textarea>
         <paper-button raised class="blue" on-click="_postMessage">post</paper-button>
       </div>
@@ -70,72 +72,10 @@
 
       attached: function() {
 
-        // this.posts = [{
-        //   username : "one",
-        //   message : "hello1",
-        //   date : Date.now(),
-        //   replies : [{
-        //     username : "one.one",
-        //     message : "hello1.1",
-        //     date : Date.now(),
-        //     replies : [],
-        //   },{
-        //     username : "one.two",
-        //     message : "hello1.2",
-        //     date : Date.now(),
-        //     replies : [{
-        //       username : "one.two.one",
-        //       message : "hello1.2.1",
-        //       date : Date.now(),
-        //       replies : [{
-        //         username : "one.two.one.one",
-        //         message : "hello1.2.1.1",
-        //         date : Date.now(),
-        //         replies : [{
-        //           username : "one.two.one.one.one",
-        //           message : "hello1.2.1.1.1",
-        //           date : Date.now(),
-        //           replies : [],
-        //         }],
-        //       }],
-        //     }],
-        //   }],
-        // },{
-        //   username : "two",
-        //   message : "hello2",
-        //   date : Date.now(),
-        //   replies : [],
-        // },{
-        //   username : "three",
-        //   message : "hello3",
-        //   date : Date.now(),
-        //   replies : [{
-        //     username : "three.one",
-        //     message : "hello3.1",
-        //     date : Date.now(),
-        //     replies : [],
-        //   },{
-        //     username : "three.two",
-        //     message : "hello3.2",
-        //     date : Date.now(),
-        //     replies : [],
-        //   },{
-        //     username : "three.three",
-        //     message : "hello3.3",
-        //     date : Date.now(),
-        //     replies : [],
-        //   }],
-        // },{
-        //   username : "four",
-        //   message : "hello4",
-        //   date : Date.now(),
-        //   replies : [{
-        //     username : "four.one",
-        //     message : "hello4.1",
-        //     date : Date.now(),
-        //     replies : [],
-        //   }],
-        // }];
+        /* get username if present */
+        if (localStorage.username) {
+          this.$.username.value = localStorage.username;
+        }
 
         if (this.posts.length === 0) {
           this.$.noposts.style.display = "block";
@@ -145,11 +85,15 @@
           this.$.noposts.style.display = "none";
         }
 
-        for (var post of this.posts) {
+        var rev_posts = this.posts.reverse();
+
+        for (var post of rev_posts) {
           var dom_post = document.createElement('nepeta-post');
           dom_post.username = post.username;
           dom_post.message = post.message;
           dom_post.date = post.date;
+          dom_post.roomid = this.roomid;
+          dom_post._id = post._id;
           if (post.replies && post.replies.length > 0) {
             for (var reply of post.replies) {
               var dom_reply = this._createDOMPost(reply);
@@ -166,6 +110,8 @@
         dom_post.username = post.username;
         dom_post.message = post.message;
         dom_post.date = post.date;
+        dom_post.roomid = this.roomid;
+        dom_post._id = post._id;
         if (post.replies && post.replies.length > 0) {
           for (var reply of post.replies) {
             var dom_reply = this._createDOMPost(reply);
@@ -185,7 +131,13 @@
             message:  post_message,
             date:     Date.now(),
           };
-          if (post_username) newpost.username = post_username;
+          if (post_username) {
+            newpost.username = post_username;
+            localStorage.username = post_username;
+          }
+
+          /* clear message, leave username */
+          this.$.message.value = "";
 
           /* post message and display */
           ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {

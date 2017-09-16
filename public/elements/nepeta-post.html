@@ -11,19 +11,53 @@
         border: solid 1px white;
       }
 
-      #replies {
-        padding: 5px 5px 5px 10px;
+      #data {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
       }
-
       .username, .message, .date {
         margin: 0;
         padding: 5px;
       }
+
+      #messageandreply {
+
+      }
+      #main-message {
+
+      }
+      #replybtn, #closebtn {
+
+      }
+
+      #replyform {
+        display: none;
+      }
+
+      #replies {
+        padding: 5px 5px 5px 10px;
+      }
     </style>
 
-    <p class="username">{{username}}</p>
-    <p class="message">{{message}}</p>
-    <p class="date">{{date}}</p>
+    <div id="data">
+      <p class="username">{{username}}</p>
+      <p class="date">{{date}}</p>
+    </div>
+    <div id="messageandreply">
+      <p class="message" id="main-message">{{message}}</p>
+      <paper-button id="replybtn" class="blue" on-click="_openReplyForm">add reply</paper-button>
+      <paper-button id="closebtn" class="blue" on-click="_closeReplyForm">cancel</paper-button>
+    </div>
+
+    <div id="replyform">
+      <paper-input id="username" label="username (optional)"></paper-input>
+      <paper-textarea id="message" label="message"></paper-textarea>
+      <paper-button raised class="blue" on-click="_postReply">post</paper-button>
+    </div>
+
+
 
     <!-- replies to this post -->
     <div id="replies">
@@ -47,6 +81,73 @@
         },
         date: {
           type: Date,
+        },
+        roomid: {
+          type: String,
+        },
+        _id: {
+          type: String,
+        },
+      },
+
+      attached: function() {
+        this.$.closebtn.style.display = "none";
+        this.$.replybtn.style.display = "block";
+      },
+
+      _openReplyForm: function() {
+        this.$.replyform.style.display = "block";
+        this.$.closebtn.style.display = "block";
+        this.$.replybtn.style.display = "none";
+        if (localStorage.username) this.$.username.value = localStorage.username;
+      },
+
+      _closeReplyForm: function() {
+        this.$.replyform.style.display = "none";
+        this.$.closebtn.style.display = "none";
+        this.$.replybtn.style.display = "block";
+      },
+
+      _createDOMPost: function(post) {
+        var dom_post = document.createElement('nepeta-post');
+        dom_post.username = post.username;
+        dom_post.message = post.message;
+        dom_post.date = post.date;
+        if (post.replies && post.replies.length > 0) {
+          for (var reply of post.replies) {
+            var dom_reply = this._createDOMPost(reply);
+            dom_post.appendChild(dom_reply);
+          }
+        }
+        return dom_post;
+      },
+
+      _postReply: function() {
+        let post_username = this.$.username.value;
+        let post_message = this.$.message.value;
+        if (!post_message) alert("no message");
+        else {
+          /* create new post */
+          var newpost = {
+            message:  post_message,
+            date:     Date.now(),
+            parent:   this._id,
+          };
+          if (post_username) {
+            newpost.username = post_username;
+            localStorage.username = post_username;
+          }
+
+          /* clear message, leave username, hide form */
+          this.$.message.value = "";
+          this.$.replyform.style.display = "none";
+
+          /* post message and display */
+          ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
+            console.log(res);
+            var created_post = this._createDOMPost(res);
+            this.$.replies.appendChild(created_post);
+          }.bind(this));
         }
       },
     });
