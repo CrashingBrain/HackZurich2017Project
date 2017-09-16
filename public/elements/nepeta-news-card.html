@@ -5,13 +5,23 @@
   <template>
     <style include="shared-style">
       :host {
+        box-sizing: border-box;
         display: inline-block;
         width: 300px;
         height: 150px;
         margin: 10px !important;
+        padding: 10px !important;
         box-shadow: 0px 0px 1px var(--box-shadow-color);
         background-color: white;
         border-radius: 4px;
+      }
+
+      card-title {
+        display: block;
+        text-align: left;
+        font-family: 'Pathway Gothic One', sans-serif;
+        font-size: 20px;
+
       }
     </style>
 
