@@ -71,8 +71,13 @@
             hashtagString = hashtagString.substring(0, hashtagString.length - 2);
             news.tags = hashtagString;
           });
+          this.newsArray.sort(this.moreActive);
         }.bind(this));
       },
+
+      moreActive: function(a, b) {
+        return a.postsCount - b.postsCount;
+      }
     });
   </script>
 </dom-module>
