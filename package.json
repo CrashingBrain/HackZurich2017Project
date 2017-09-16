@@ -4,9 +4,9 @@
   "description": "Reuters news forum rooms aggregator thing",
   "main": "app.js",
   "scripts": {
-    "start": "DEBUG='nepeta' ./bin/www",
-    "start:dev": "DEBUG='nepeta' nodemon ./bin/www -e html,css,dust,js,json,sh",
-    "test": "DEBUG='nepeta' node --inspect ./bin/www"
+    "start": "DEBUG='nepeta websocket' ./bin/www",
+    "start:dev": "DEBUG='nepeta websocket' nodemon ./bin/www -e html,css,dust,js,json,sh",
+    "test": "DEBUG='nepeta websocket' node --inspect ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "morgan": "^1.8.2",
     "path": "^0.12.7",
     "socket.io": "^2.0.3",
+    "util": "^0.10.3",
     "xhr2": "^0.1.4",
     "xml2js": "^0.4.19"
   }

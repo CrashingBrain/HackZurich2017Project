@@ -1,0 +1,32 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/elements/nepeta-header.html"></link>
+<link rel="import" href="/elements/nepeta-news.html"></link>
+<link rel="import" href="/elements/nepeta-search.html"></link>
+
+<style is="custom-style" include="shared-style"></style>
+
+<dom-module id="nepeta-index">
+  <template>
+    <style>
+      host: {
+        display: block;
+      }
+    </style>
+
+    <nepeta-header>
+      <nepeta-search></nepeta-search>
+    </nepeta-header>
+
+    <nepeta-news></nepeta-news>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-index'
+    });
+  </script>
+</dom-module>

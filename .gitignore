@@ -1,4 +1,6 @@
-token
+token.tok
 node_modules/
+bower_components/
 package-lock.json
+npm-debug.log
 
