@@ -65,6 +65,13 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
+module.exports.findMostFrequent = function(allItems){
+	for (var i = allItems.length - 1; i >= 0; i--) {
+		var uri = allItems[i].uri;
+		
+	}
+}
+
 /* Internal functions */
 
 function canJSON(value) {
@@ -130,3 +137,19 @@ function doRequestSetHeaders(r, method, headers){
 	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
 	    }
 	  }
+
+
+// utility for tags
+Array.prototype.byCount= function(){
+    var itm, a= [], L= this.length, o= {};
+    for(var i= 0; i<L; i++){
+        itm= this[i];
+        if(!itm) continue;
+        if(o[itm]== undefined) o[itm]= 1;
+        else ++o[itm];
+    }
+    for(var p in o) a[a.length]= p;
+    return a.sort(function(a, b){
+        return o[b]-o[a];
+    });
+}

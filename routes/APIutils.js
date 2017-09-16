@@ -3,6 +3,8 @@
 * functions to get stuff from the API
 */
 
+
+	const utils = require('./utils');
 	/*
 		Returns the title of an Item object as returned from a call of XMLRequest as XML
 	*/
@@ -53,5 +55,12 @@
 		return names;
 	}
 
+	/* Given an Item Id performs request for its entities 
+	returns array of entities
+	*/
+	module.exports.doEntitiesRequest = function(itemId, callback){
+		var url = "http://rmb.reuters.com/rmd/rest/xml/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI=";
+		utils.doXMLRequest('GET', url, null, null, callback);
+	}
 
 	//TODO maybe implemnt images

@@ -6,7 +6,7 @@
 * lastpost          Date          date of last post in the Room
 * posts             [ObjectID]    posts contained in the room
 * items		          [Object]    	array of news items contained in the room
-* tags							[Objet]				array of all tags contained in the items, with frequencies
+* tags							[Objet]				array of all tags contained in the items, with frequencies, sorted
 *
 * _id (ObjectID) will be added automatically by mongoose if not specified
 */
