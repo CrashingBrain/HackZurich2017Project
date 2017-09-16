@@ -5,7 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="webcomponentsjs/webcomponents-lite.js"></script>
     <script>
       window.Polymer = window.Polymer || {};
       window.Polymer.dom = 'shadow';
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Socket Client -->
-    <!-- <script src="/socket.io/socket.io.js"></script>
-    <script src="js/socket-client.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/socket-client.js"></script>
   </body>
 </html>

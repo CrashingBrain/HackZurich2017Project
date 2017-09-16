@@ -28,7 +28,6 @@
     "tests"
   ],
   "dependencies": {
-    "app-route": "PolymerElements/app-route#^0.9.3",
-    "polymer": "Polymer/polymer#^2.0.2"
+    "polymer": "^1.7.0"
   }
 }

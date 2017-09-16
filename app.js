@@ -27,6 +27,7 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));  // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());    // parse application/json
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
 app.use(methodOverride(function(req, res) {
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
     var method = req.body._method;
