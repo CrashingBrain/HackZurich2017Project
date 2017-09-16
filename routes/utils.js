@@ -3,7 +3,7 @@
 
 const parseString = require('xml2js').parseString;
 const XMLHttpRequest = require('xhr2');
-const APIutils = require('APIutils');
+const APIutils = require('./APIutils');
 	
 
 	/*
