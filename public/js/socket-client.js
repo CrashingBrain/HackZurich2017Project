@@ -1,7 +1,7 @@
 /* Socket client */
 
-var socket = io.connect('http://localhost');
+var socket = io();
 
-socket.on('connect', function(data) {
-  console.log(data);
+socket.on('connect', function() {
+  console.log("Connected to WebSocket");
 });
