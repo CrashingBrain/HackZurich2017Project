@@ -68,7 +68,9 @@ function areCommonEntities(mainItem, newItem, threshold, callback){
 		var mainNames = APIutils.getEntitiesNames(mainEntities);
 		APIutils.doEntitiesRequest(newItem.versionedguid, function(newEntities) {
 			var newNames = APIutils.getEntitiesNames(newEntities);
-			callback(mainNames.filter((n) => newNames.includes(n)).length >= threshold)
+      let commonTagsCount = mainNames.filter((n) => newNames.includes(n)).length;
+      // console.log('COMMON tags between', mainItem.headline, ' ? ', newItem.headline, ' = ', commonTagsCount);
+			callback(commonTagsCount >= threshold);
 		});
 	});
 }
