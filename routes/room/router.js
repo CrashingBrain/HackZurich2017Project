@@ -16,17 +16,18 @@ router.all('/', middleware.supportedMethods('GET, OPTIONS'));
 
 /* Room no id, return nothing */
 router.get('/', function(req, res, next) {
-  var newsArray;
+  var newsArray = [];
   Room.find({}, function(err, rooms) {
-    for (room of rooms) {
+    for (let room of rooms) {
       var news = {
         title : room.headline,
         postsCount : room.postsCount,
         lastPost : room.lastPost,
         tags : room.tags,
       }
-      newsArray.description = room.items[0].replace(/<p>/g, '').replace(/</p>/g, '').replace(/' +'/g, ' ');
-      rooms.push(news);
+      // news.description = room.items[0].body_xhtml.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/' +'/g, ' ');
+      news.description = 'FAKE NEWS FOR NOW'
+      newsArray.push(news);
     }
     res.status(200).json({
       statusCode: 200,
