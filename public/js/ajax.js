@@ -1,9 +1,6 @@
 /*  AJAX */
 
 
-var ajax = {
-
-
 	/*
 	 * @param {String} method The method of the AJAX request. One of: "GET", "POST", "PUT", "DELETE".
 	 * @param {String} url The url of the API to call, optionally with parameters.
@@ -122,5 +119,3 @@ var ajax = {
 	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
 	    }
 	  }
-
-}
