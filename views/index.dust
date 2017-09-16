@@ -21,6 +21,13 @@
 
     <div id="newsFlash">
       <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
+      <newscard></newscard>
     </div>
 
     <!-- Socket Client -->
