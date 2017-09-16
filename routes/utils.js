@@ -1,7 +1,8 @@
 /*  AJAX with XML converter*/
 
 
-const parseString = require('xml2js').parseString; 
+const parseString = require('xml2js').parseString;
+const XMLHttpRequest = require('xhr2');
 	
 
 	/*
@@ -43,9 +44,10 @@ const parseString = require('xml2js').parseString;
 	      else {
 	      		parseString(r.responseText, function (err, result) {
 	      		    console.dir(result);
-	      	  		callback(JSON.parse(result));
+	      		    console.log('#####');
+	      		    console.log(result);
+	      	  		// callback(JSON.parse(result));
 	      		});
-	      		parseString.reset();
 	      }
 
 	    }
@@ -65,7 +67,9 @@ const parseString = require('xml2js').parseString;
 
 	}
 
-	module.exports.canJSON = function canJSON(value) {
+	// Internal functions
+
+function canJSON(value) {
 	  try {
 	    const jsonString = JSON.stringify(value);
 	    if (!("undefined" == typeof jsonString) 
@@ -79,7 +83,7 @@ const parseString = require('xml2js').parseString;
 	  }
 	}
 
-	module.exports.isJSON = function isJSON(jsonString){
+function isJSON(jsonString){
 
 	  try {
 	    const o = JSON.parse(jsonString);
@@ -93,7 +97,7 @@ const parseString = require('xml2js').parseString;
 	  return false;
 	}
 
-	module.exports.doRequestSetHeaders = function doRequestSetHeaders(r, method, headers){
+function doRequestSetHeaders(r, method, headers){
 
 	  //set the default JSON header according to the method parameter
 	  // r.setRequestHeader("Accept", "application/json");
@@ -114,7 +118,7 @@ const parseString = require('xml2js').parseString;
 	  }
 	}
 
-	module.exports.doRequestChecks = function doRequestChecks(method, isAsynchronous, data){
+	function doRequestChecks(method, isAsynchronous, data){
 
 	  //verify the request method
 	  if(method!="GET" && method!="POST" && method!="PUT" && method!="DELETE") {
