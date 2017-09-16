@@ -48,7 +48,10 @@ router.get('/:room_id', function(req, res, next) {
   /* Get room  and populate data */
   else if (req.accepts('text/html')) {
     Room.findById(req.params.room_id)
-    .populate('posts')
+    .populate({
+      path: 'posts',
+      populate: { path: 'replies' },
+    })
     .exec(function(err, room_data) {
       if (err) {
         res.sendStatus(500);
@@ -81,35 +84,40 @@ router.post('/:room_id', function(req, res, next) {
 
         // if true then post is a reply to another post
         // add as reply of parent
-        if (newPost.parent) 
-        {
-          Post.findById(parent).exec(function(err, post){
+        if (newPost.parent) {
+          Post.findById(newPost.parent).exec(function(err, post) {
             if (err) return next(err);
             if (!post) {
               res.status(404).json({
                 message: "Trying to reply to a non-existent post."
               });
-            } else {
+            }
+            else {
               // save new post and augment coutn in room
               newPost.save(function(err, savedChild) {
                 if (err) {
                   res.status(400).json({
                     message: "Error saving new post."
                   });
-                } else {
-                  // now save child into parent
-                  post.children.push(saved._id);
+                }
+                else {
+                  // now save child id into parent
+                  post.replies.push(savedChild._id);
                   post.save(function(err, savedParent) {
                     if (err) {
                       res.status(400).json({
                         message: "Could not save Post in parent post."
                       });
-                    } else {
+                    }
+                    else if (savedParent) {
                       room.postsCount++;
-                      room.save(function(err, savedRoom){
+                      room.save(function(err, savedRoom) {
                         res.status(201).json(savedChild);
                       });
                     }
+                    else res.status(400).json({
+                      message: "Could not save parent."
+                    });
                   });
                 }
               });
@@ -117,30 +125,30 @@ router.post('/:room_id', function(req, res, next) {
           });
         } else {
           // no parent. then it's not a reply to another post
-          newPost.save(function(err, saved){
+          newPost.save(function(err, saved) {
             if (err) {
               res.status(400).json({
                 message: "Error saving new post."
               });
-            } else {
+            } else if (saved) {
               // post saved in DB, now add it to the room.
-                room.posts.push(saved._id);
-                room.save(function(err, updatedRoom){
-                  if (err){
-                    res.status(400).json({
-                      message: "Could not save Post in Room. "
-                    });
-                  } else {
-                    res.status(201).json(saved);
-                  }
-                });
-              
+              room.posts.push(saved._id);
+              room.save(function(err, updatedRoom) {
+                if (err) {
+                  res.status(400).json({
+                    message: "Could not save Post in Room. "
+                  });
+                } else {
+                  res.status(201).json(saved);
+                }
+              });
             }
+            else res.status(400);
           });
         }
       }
     });
-    
+
   }
 });
 

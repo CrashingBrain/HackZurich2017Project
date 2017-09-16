@@ -21,14 +21,12 @@ const Post = exports.Claim = new mongoose.Schema({
   date :            { type : Date, default : Date.now() },
   replies :         [{ type : ObjectID, default : [] }],
   parent: 				  { type: ObjectID, ref: 'Post' },
-
 });
 
 Post.post('validate', function(doc) {
   if (doc.username === "anon") {
     doc.username = "anon" + Math.floor(Math.random()*100000000000);
   }
-  next();
 });
 
 /* Register model for schema */
