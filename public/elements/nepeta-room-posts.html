@@ -1,0 +1,27 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/elements/nepeta-post.html"></link>
+
+
+<dom-module id="nepeta-room-posts">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        flex: 1;
+        background-color: lime;
+      }
+    </style>
+
+    <p id="nepeta-room-posts-tag">nepeta-room-posts</p>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-room-posts',
+    });
+  </script>
+</dom-module>

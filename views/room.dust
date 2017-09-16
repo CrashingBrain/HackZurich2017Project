@@ -14,13 +14,13 @@
     <link rel="import" href="/elements/nepeta-room.html"></link>
 
     <!-- Style -->
-    <link rel="import" href="css/shared-style.html">
+    <link rel="import" href="/css/shared-style.html">
 
   </head>
 
   <body>
 
-    <nepeta-room room={room}></nepeta-room>
+    <nepeta-room roomstring="{roomstring}"></nepeta-room>
 
     <!-- Socket Client -->
     <script src="/socket.io/socket.io.js"></script>
