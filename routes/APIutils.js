@@ -11,9 +11,7 @@ const config = require('../config');
 	Returns the title of an Item object as returned from a call of XMLRequest as JSON
 */
 module.exports.getItemTitle = function(itemData){
-
 	return itemData.headline;
-
 }
 
 /*
@@ -54,7 +52,7 @@ module.exports.getEntitiesNames = function(entitiesData){
 returns array of entities
 */
 module.exports.doEntitiesRequest = function(itemId, callback){
-	var url = "http://rmb.reuters.com/rmd/rest/xml/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI=";
+	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI=";
 	utils.doJSONRequest('GET', url, null, null, callback);
 }
 
@@ -62,31 +60,25 @@ module.exports.doEntitiesRequest = function(itemId, callback){
 // (see reuters docs @ 4.2.2)
 function getPollToken(callback) {
   let now = moment().format('YYYY.MM.DD.hh.mm');
-  let aMinuteAgo =  moment().utc().subtract(1, 'hour').format('YYYY.MM.DD.hh.mm');
-  let pollingUrl = 'http://rmb.reuters.com/rmd/rest/xml/items?channel=STK567&dateRange=' + aMinuteAgo + '&token=' + config.reutersToken;
+  let aMinuteAgo =  moment().utc().subtract(1, 'minute').format('YYYY.MM.DD.hh.mm');
+  let pollingUrl = 'http://rmb.reuters.com/rmd/rest/json/items?channel=FES376&mediaType=T&dateRange=' + aMinuteAgo + '&token=' + config.reutersToken;
   utils.doJSONRequest('GET', pollingUrl, null, null, callback);
 }
 
 // Get news items using periodic polling key
 function getPeriodicItems(pollToken) {
-  let pollingUrl = 'http://rmb.reuters.com/rmd/rest/xml/items?channel=STK567&token=' + config.reutersToken + '&pollToken=' + pollToken;
-  utils.doJSONRequest('GET', pollingUrl, null, null, function(data) {
-    for(let newsItem of data.results.result)
-      if(!utils.isDuplicateNewsItem(newsItem.id[0])) {
-        // TODO check common topic and put in existing room
-        // or
-        utils.openRoom(newsItem);
-      }
-	});
+  let pollingUrl = 'http://rmb.reuters.com/rmd/rest/json/items?channel=FES376&mediaType=T&token=' + config.reutersToken + '&pollToken=' + pollToken;
+  utils.doJSONRequest('GET', pollingUrl, null, null, demuxNewsItems);
 }
 
 // periodically make a news items request
 module.exports.pollRecentNews = function(pollingTimeMs) {
   utils.seedNewsItems();
 
-  getPollToken(function(data) {
-    let pollToken = data.results.pollToken;
-
+  getPollToken(function(data, error) {
+    if(error) return;
+    let pollToken = data.pollToken;
+    demuxNewsItems(data);
     setInterval(
       () => getPeriodicItems(pollToken),
       pollingTimeMs
@@ -95,6 +87,44 @@ module.exports.pollRecentNews = function(pollingTimeMs) {
 }
 
 
+function demuxNewsItems(data, error) {
+  if(error) return;
+  console.log('number of news items: ', data.results.length);
 
+  // if same news, keep highest version
+  let items = data.results;
+  for(let i = 0; i < items.length; i++) {
+    for(let j = 0; j < items.length; j++) {
+      if(i == j || !items[i] || !items[j]) continue;
 
-//TODO maybe implemnt images
+      if(items[i].guid == items[j].guid) {
+        if(items[i].version > items[j].version)
+          items[j] = null;
+        else
+          items[i] = null;
+      }
+    }
+  }
+
+  items = items.filter((item) => item != null );
+
+  for(let newsItem of items) {
+    let existing = utils.getDuplicateNewsItem(newsItem.guid);
+    if(!existing) {
+      // TODO check common topic and put in existing room
+      // or
+      let itemUrl = 'http://rmb.reuters.com/rmd/rest/json/item?id=' + newsItem.id + '&channel=FES376&token=' + config.reutersToken;
+
+      utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
+        if(error) return;
+
+        utils.openRoom(item);
+      });
+    } else if(existing.version < newsItem.version) {
+      // TODO update item in room @ existing.room
+      console.log('TODO');
+    } else {
+      console.log('discarded duplicate', newsItem.guid);
+    }
+  }
+}

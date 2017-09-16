@@ -24,9 +24,10 @@ router.get('/', function(req, res, next) {
         postsCount : room.postsCount,
         lastPost : room.lastPost,
         tags : room.tags,
+        id : room._id
       }
-      // news.description = room.items[0].body_xhtml.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/' +'/g, ' ');
-      news.description = 'FAKE NEWS FOR NOW'
+      news.description = room.items[0].body_xhtml.replace(/<p>/g, '').replace(/\n/g, '').replace(/<\/p>/g, '').replace(/<p\/>/g, '');
+      // news.description = 'FAKE NEWS FOR NOW'
       newsArray.push(news);
     }
     res.status(200).json({
