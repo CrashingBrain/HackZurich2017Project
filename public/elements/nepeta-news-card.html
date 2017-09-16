@@ -55,12 +55,24 @@
         position: absolute;
         left: 6px;
         bottom: 14px;
-        width: 240px;
+        width: 256px;
         overflow: hidden;
         color: var(--primary-color);
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
+      card-enter-room a {
+        position: absolute;
+        right: 10px;
+        bottom: 13px;
+        color: var(--primary-font-color);
+      }
+
+      card-enter-room a:hover {
+          color: var(--primary-color);
+      }
+
     </style>
 
     <card-title>News Title longerinoVers</card-title>
@@ -73,7 +85,9 @@
       also not that short so that they would fit in a small description.
     </card-desc>
     <card-hashtags>#hahaha, #testi, #boh, #another, #Hashtag, #mehehe</card-hashtags>
-    <card-enter-room></card-enter-room>
+    <card-enter-room>
+      <a href="/"><iron-icon icon="exit-to-app"></iron-icon></a>
+    </card-enter-room>
 
 
   </template>
