@@ -30,13 +30,16 @@
     <nepeta-header></nepeta-header>
 
     <room-main>
+
       <nepeta-room-data
         headline="[[room.headline]]"
         newsitems="[[room.items]]"
         references="[[room.references]]"
         tags="[[room.tags]]"
       ></nepeta-room-data>
-      <nepeta-room-posts></nepeta-room-posts>
+
+      <nepeta-room-posts posts="[[room.posts]]"></nepeta-room-posts>
+      
     </room-main>
 
   </template>

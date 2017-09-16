@@ -11,17 +11,128 @@
       :host {
         display: block;
         flex: 1;
-        background-color: lime;
+        background-color: blue;
+        color: yellow;
+      }
+
+      posts-containter {
+        display: block;
       }
     </style>
 
-    <p id="nepeta-room-posts-tag">nepeta-room-posts</p>
+    <div id="parentposts"></div>
 
   </template>
 
   <script>
     Polymer({
       is : 'nepeta-room-posts',
+
+      properties: {
+        posts: {
+          type: Array,
+          default: [],
+        },
+      },
+
+      ready: function() {
+
+        this.posts = [{
+          username : "one",
+          message : "hello1",
+          date : Date.now(),
+          replies : [{
+            username : "one.one",
+            message : "hello1.1",
+            date : Date.now(),
+            replies : [],
+          },{
+            username : "one.two",
+            message : "hello1.2",
+            date : Date.now(),
+            replies : [{
+              username : "one.two.one",
+              message : "hello1.2.1",
+              date : Date.now(),
+              replies : [{
+                username : "one.two.one.one",
+                message : "hello1.2.1.1",
+                date : Date.now(),
+                replies : [{
+                  username : "one.two.one.one.one",
+                  message : "hello1.2.1.1.1",
+                  date : Date.now(),
+                  replies : [],
+                }],
+              }],
+            }],
+          }],
+        },{
+          username : "two",
+          message : "hello2",
+          date : Date.now(),
+          replies : [],
+        },{
+          username : "three",
+          message : "hello3",
+          date : Date.now(),
+          replies : [{
+            username : "three.one",
+            message : "hello3.1",
+            date : Date.now(),
+            replies : [],
+          },{
+            username : "three.two",
+            message : "hello3.2",
+            date : Date.now(),
+            replies : [],
+          },{
+            username : "three.three",
+            message : "hello3.3",
+            date : Date.now(),
+            replies : [],
+          }],
+        },{
+          username : "four",
+          message : "hello4",
+          date : Date.now(),
+          replies : [{
+            username : "four.one",
+            message : "hello4.1",
+            date : Date.now(),
+            replies : [],
+          }],
+        }];
+
+        for (var post of this.posts) {
+          var dom_post = document.createElement('nepeta-post');
+          dom_post.username = post.username;
+          dom_post.message = post.message;
+          dom_post.date = post.date;
+          if (post.replies.length > 0) {
+            for (var reply of post.replies) {
+              var dom_reply = this._createDOMPost(reply);
+              dom_post.appendChild(dom_reply);
+            }
+          }
+
+          this.$.parentposts.appendChild(dom_post);
+        }
+      },
+
+      _createDOMPost: function(post) {
+        var dom_post = document.createElement('nepeta-post');
+        dom_post.username = post.username;
+        dom_post.message = post.message;
+        dom_post.date = post.date;
+        if (post.replies.length > 0) {
+          for (var reply of post.replies) {
+            var dom_reply = this._createDOMPost(reply);
+            dom_post.appendChild(dom_reply);
+          }
+        }
+        return dom_post;
+      },
     });
   </script>
 </dom-module>

@@ -19,8 +19,7 @@ const Post = exports.Claim = new mongoose.Schema({
   username :        { type : String, default : "anon" },
   message :         { type : String, required : true },
   date :            { type : Date, default : Date.now() },
-  room :            { type : ObjectID, ref: "Room", required : true },
-  children :        [{ type : ObjectID, default : [] }],
+  replies :         [{ type : ObjectID, default : [] }],
 });
 
 Post.post('validate', function(doc) {
