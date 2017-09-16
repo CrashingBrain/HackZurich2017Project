@@ -6,6 +6,7 @@
 /* Import */
 const socketIo = require('socket.io');
 const util = require('util');
+var debug = require('debug')('websocket');
 
 /* Export */
 module.exports = function(httpServer) {
@@ -13,14 +14,14 @@ module.exports = function(httpServer) {
 
 	/* Socket.io server */
 	io.on('connect', function(socket) {
-		console.log('New client connected: ' + socket.id);
+    debug('New client connected: ' + socket.id);
 
 		socket.on('disconnect', function(reason) {
-			console.log('Client disconnected: ' + JSON.stringify(reason));
+			debug('Client disconnected: ' + JSON.stringify(reason));
 		});
 
 		socket.on('error', function(err) {
-			console.log("Error: " + err);
+			debug("Error: " + err);
 		});
 
 	});

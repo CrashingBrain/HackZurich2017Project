@@ -39,6 +39,7 @@ app.use(methodOverride(function(req, res) {
 /* Initialize routers here */
 var routers = require('./routes/routers');
 app.use('/', routers.root);
+app.use('/room', routers.room);
 
 module.exports = app;
 process.title = 'nepeta'
