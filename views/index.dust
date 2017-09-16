@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
     <title>Nepeta - News Aggregator</title>
+
+    <meta charset="UTF-8">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+    </script>
+
+    <!-- Polymer Components -->
+    <link rel="import" href="elements/nepeta-search.html"></link>
 
     <!-- Style -->
     <link rel="stylesheet" type="text/css" href="css/index.css">
@@ -20,7 +30,7 @@
     </header>
 
     <div id="newsFlash">
-      <newscard></newscard>
+      <newscard><nepeta-search></nepeta-search></newscard>
       <newscard></newscard>
       <newscard></newscard>
       <newscard></newscard>
@@ -31,7 +41,7 @@
     </div>
 
     <!-- Socket Client -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/socket-client.js"></script>
+    <!-- <script src="/socket.io/socket.io.js"></script>
+    <script src="js/socket-client.js"></script> -->
   </body>
 </html>
