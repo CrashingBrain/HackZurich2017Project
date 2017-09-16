@@ -20,6 +20,8 @@ const Post = exports.Claim = new mongoose.Schema({
   message :         { type : String, required : true },
   date :            { type : Date, default : Date.now() },
   replies :         [{ type : ObjectID, default : [] }],
+  parent: 				  { type: ObjectID, ref: 'Post' },
+
 });
 
 Post.post('validate', function(doc) {
