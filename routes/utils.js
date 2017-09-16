@@ -15,7 +15,7 @@ const XMLHttpRequest = require('xhr2');
 	 * @param {JSON} data The data in the JSON format to be sent to the server. It must be null if there are no data.
 	 * @param {Function} callback The function to call when the response is ready.
 	 */
-	module.exports.doXMLRequest = function doXMLRequest(method, url, headers, data, callback){
+	module.exports.doJSONRequest = function doJSONRequest(method, url, headers, data, callback){
 
 	  //all the arguments are mandatory
 	  if(arguments.length != 5) {
@@ -65,11 +65,8 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
-module.exports.findMostFrequent = function(allItems){
-	for (var i = allItems.length - 1; i >= 0; i--) {
-		var uri = allItems[i].uri;
-		
-	}
+module.exports.areCommonEntities = function(item, newItem){
+
 }
 
 /* Internal functions */
