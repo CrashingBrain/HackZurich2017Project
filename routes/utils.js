@@ -43,10 +43,8 @@ const XMLHttpRequest = require('xhr2');
 	        callback(JSON.parse(r.responseText));
 	      else {
 	      		parseString(r.responseText, function (err, result) {
-	      		    console.dir(result);
-	      		    console.log('#####');
-	      		    console.log(result);
-	      	  		// callback(JSON.parse(result));
+	      		    console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
+	      	  		callback(result);
 	      		});
 	      }
 
@@ -67,7 +65,17 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
-	// Internal functions
+
+	/*
+		Returns the title of an Item object as returned from a call of XMLRequest
+	*/
+	module.exports.getItemTitle = function(itemData){
+
+		return itemData.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0];
+
+	}
+
+/* Internal functions */
 
 function canJSON(value) {
 	  try {
