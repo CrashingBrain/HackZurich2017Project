@@ -49,11 +49,29 @@ module.exports.getEntitiesNames = function(entitiesData) {
 	return names;
 }
 
+module.exports.getLocationEntity = function(entitiesData) {
+  if(!entitiesData) return null;
+
+  let maxRelevancy = 0.0;
+  let mostRelevantLocation = 'Earth';
+
+  for (let entity of entitiesData.items[0].entities) {
+		if(entity.vtype === "ENTITY"
+      && entity.type === 'http://s.opencalais.com/1/type/er/Geo/City'
+      && entity.relevancy > maxRelevancy) {
+        maxRelevancy = entity.relevancy;
+        mostRelevantLocation = entity.name;
+		}
+	}
+
+  return mostRelevantLocation;
+}
+
 /* Given an Item Id performs request for its entities
 returns array of entities
 */
 module.exports.doEntitiesRequest = function(itemId, callback){
-	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI=";
+	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0" + '&token=' + config.reutersToken;;
 	utils.doJSONRequest('GET', url, null, null, callback);
 }
 

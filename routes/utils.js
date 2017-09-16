@@ -77,6 +77,7 @@ function areCommonEntities(mainItem, newItem, threshold, callback){
 
 module.exports.demuxItem = function(item) {
 	var itemId = item.uri;
+
 	Room.find({}, function(err, rooms) {
     if (err) {
       console.log("error finding rooms: ", err);
@@ -188,9 +189,11 @@ module.exports.openRoom = (newsItem) => {
   		console.log('error retrieving room tags: ', err);
   	} else {
   		let tags = APIutils.getEntitiesNames(entities);
+      let location = APIutils.getLocationEntity(entities);
       let room = new Room(newsItem);
       room.items = [newsItem];
   		room.tags = tags;
+      room.location = location || 'Earth';
 
       room.save(function(err, saved) {
         if (err) {

@@ -24,6 +24,7 @@ const Room = exports.Claim = new mongoose.Schema({
   posts		     :        [{ type : ObjectID, ref:"Post"} ],
   items		     : 				{ type : Array, "default" : [] },
   references	 : 				{ type : Array, "default" : [] },
+  location	   : 				{ type : String, default : "Earth" },
   tags		     : 				{ type : Array, "default" : [] },
 });
 
