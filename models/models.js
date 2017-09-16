@@ -9,6 +9,6 @@ require('./Post');
 require('./Room');
 
 module.exports = {
-	'Post'         : mongoose.model('Post'), //TODO create and register model
-	'Room'         : mongoose.model('Room'), //TODO create and register model
+	'Post'         : mongoose.model('Post'),
+	'Room'         : mongoose.model('Room'),
 }
