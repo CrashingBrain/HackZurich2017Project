@@ -1,4 +1,4 @@
-module.exports.supportedMethods = function(commaSeperatedMethods){
+module.exports.supportedMethods = function(commaSeperatedMethods) {
   var supMethods = commaSeperatedMethods.split(', ').map(function(method) {
     return method.trim();
   });

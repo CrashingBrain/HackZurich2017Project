@@ -3,10 +3,13 @@
 
 /* Imports */
 const express = require('express');
+const middleware = require('../middleware');
+
+/* Create router */
 const router = express.Router();
 
 /* Supported methods */
-//TODO
+router.all('/', middleware.supportedMethods('GET, OPTIONS'));
 
 /* Home */
 router.get('/', function(req, res, next) {
