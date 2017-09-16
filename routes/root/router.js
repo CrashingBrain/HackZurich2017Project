@@ -22,7 +22,7 @@ router.get('/', function(req, res, next) {
   	var restURL = "http://rmb.reuters.com/rmd/rest/json/item?id=tag:reuters.com,2017:newsml_LYNXNPED8E1X3:1&channel=BEQ259&token=0Uar2fCpykUYW2I2MlJIwL+aykWfs2VN81kIX5wuiTI="; //only images
   	var restURL2 = "http://rmb.reuters.com/rmd/rest/json/item?id=tag:reuters.com,2017:newsml_KCN1BQ161:12&token=0Uar2fCpykXbX0cWkkmYwszpfU2YWqWh81kIX5wuiTI=";
   	var entitiesURL = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=tag:reuters.com,2017:newsml_KCN1BQ161:12&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI="
-  	utils.doXMLRequest('GET', entitiesURL, null, null, function(data){
+  	utils.doJSONRequest('GET', entitiesURL, null, null, function(data){
   		console.log(data);
   		console.log(APIutils.getEntitiesNames(data));
   		// console.log(APIutils.getItemTitle(data));
