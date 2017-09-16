@@ -19,14 +19,14 @@ try {
         // add router to our list of routers
         routers[dirEntry] = router;
       } catch(err) {
-        console.log('Could not get router for ' + dirEntry);
-        console.log(err.toString() + err.stack);
+        // console.log('Could not get router for ' + dirEntry);
+        // console.log(err.toString() + err.stack);
       }
     }
   });
 } catch(err) {
-  console.log('Error while loading routers');
-  console.log(err.stack);
+  // console.log('Error while loading routers');
+  // console.log(err.stack);
   // we don't know what happened, export empty object
   routers = {}
 } finally {
