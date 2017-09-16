@@ -3,7 +3,12 @@
 
 const parseString = require('xml2js').parseString;
 const XMLHttpRequest = require('xhr2');
-	
+
+const config = require('../config');
+const mongoose = require('mongoose');
+mongoose.connect(config.mongoUrl + config.mongoDbName);
+require ('../models/models');
+const Room = mongoose.model('Room');
 
 	/*
 		Does an Ajax request expecting an XML response but converts it to JSON and parse it to the callback.
@@ -15,7 +20,7 @@ const XMLHttpRequest = require('xhr2');
 	 * @param {JSON} data The data in the JSON format to be sent to the server. It must be null if there are no data.
 	 * @param {Function} callback The function to call when the response is ready.
 	 */
-	module.exports.doXMLRequest = function doXMLRequest(method, url, headers, data, callback){
+	module.exports.doJSONRequest = function doJSONRequest(method, url, headers, data, callback){
 
 	  //all the arguments are mandatory
 	  if(arguments.length != 5) {
@@ -43,7 +48,7 @@ const XMLHttpRequest = require('xhr2');
 	        callback(JSON.parse(r.responseText));
 	      else {
 	      		parseString(r.responseText, function (err, result) {
-	      		    console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
+	      		    // console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
 	      	  		callback(result);
 	      		});
 	      }
@@ -53,7 +58,7 @@ const XMLHttpRequest = require('xhr2');
 
 	  //set the data
 	  let dataToSend = null;
-	  if (!("undefined" == typeof data) 
+	  if (!("undefined" == typeof data)
 	    && !(data === null))
 	    dataToSend = JSON.stringify(data);
 
@@ -65,48 +70,16 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
-	/*
-		Returns the title of an Item object as returned from a call of XMLRequest
-	*/
-	module.exports.getItemTitle = function(itemData){
+module.exports.areCommonEntities = function(item, newItem){
 
-		return itemData.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0];
-
-	}
-
-	/*
-		Returns relevant meta informations from an Item object as resulte from a call of XMLRequest
-	*/
-	module.exports.getItemMetas = function(itemData){
-		var newsObject = {
-			"headline"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].headline[0],
-			"dateline"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].dateline[0],
-			"by"				: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].by[0],
-			"description"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].description[0]
-		}
-
-		return newsObject;
-	}
-
-	/*
-		Returns relevant contents from an Item object as resulte from a call of XMLRequest
-	*/
-	module.exports.getItemContents = function(itemData){
-		// for test article the cntent is saved as an array of lines, so each element of the array 'body[0].p' (from tag 'p') is a string
-		var stringedHTML = JSON.stringify(itemData.newsMessage.itemSet[0].newsItem[0].contentSet[0].inlineXML[0].html[0].body[0]);
-		var newsObject = {
-			"content"	: stringedHTML
-		}
-
-		return newsObject;
-	}
+}
 
 /* Internal functions */
 
 function canJSON(value) {
 	  try {
 	    const jsonString = JSON.stringify(value);
-	    if (!("undefined" == typeof jsonString) 
+	    if (!("undefined" == typeof jsonString)
 	      && !(jsonString === null)
 	      && !(jsonString == typeof String))
 	      return true;
@@ -141,7 +114,7 @@ function doRequestSetHeaders(r, method, headers){
 	  }
 
 	  //set the additional headers
-	  if (!("undefined" == typeof headers) 
+	  if (!("undefined" == typeof headers)
 	    && !(headers === null)){
 
 	    for(header in headers){
@@ -160,9 +133,60 @@ function doRequestSetHeaders(r, method, headers){
 	  }
 
 	  //verify the data parameter
-	  if (!("undefined" == typeof data) 
+	  if (!("undefined" == typeof data)
 	    && !(data === null))
 	    if(!canJSON(data)) {
 	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
 	    }
 	  }
+
+
+// utility for tags
+Array.prototype.byCount= function(){
+    var itm, a= [], L= this.length, o= {};
+    for(var i= 0; i<L; i++){
+        itm= this[i];
+        if(!itm) continue;
+        if(o[itm]== undefined) o[itm]= 1;
+        else ++o[itm];
+    }
+    for(var p in o) a[a.length]= p;
+    return a.sort(function(a, b){
+        return o[b]-o[a];
+    });
+}
+
+// we store the ids of all news items we have in the db also in the `newsItems` object for efficient lookup, no need to query db
+const newsItems = {}; // newsItemID : roomID
+
+// loads all news items from all rooms into newsItems
+module.exports.seedNewsItems = () => {
+  Room.find({}, function(err, room) {
+    if (err) {
+      console.log("error finding rooms: " + err);
+    } else if (room && room.items) {
+      for(let newsItem of room.items)
+        newsItem[newsItem.id[0]] = room._id;
+    }
+  });
+}
+
+module.exports.isDuplicateNewsItem = (newsItemID) => {
+  return newsItems[newsItemID];
+}
+
+module.exports.openRoom = (newsItem) => {
+  let room = new Room(newsItem);
+  room.items = [newsItem];
+  console.log('saving', newsItem);
+
+  room.save(function(err, saved) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      newsItems[newsItem.id[0]] = saved._id;
+      console.log(saved);
+    }
+  });
+}

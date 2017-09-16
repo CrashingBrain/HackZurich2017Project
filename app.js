@@ -16,6 +16,7 @@ mongoose.connect(config.mongoUrl + config.mongoDbName);
 
 /* Register model definition */
 require('./models/models');
+const APIutils = require('./routes/APIutils.js');
 
 /* DustJS view engine setup */
 app.engine('dust', dustjs.dust({ whitespace : true }));
@@ -38,6 +39,11 @@ app.use(methodOverride(function(req, res) {
 /* Initialize routers here */
 var routers = require('./routes/routers');
 app.use('/', routers.root);
+
+// periodic polling
+const POLLING_INTERVAL_MS = 10000;
+APIutils.pollRecentNews(POLLING_INTERVAL_MS);
+
 
 module.exports = app;
 process.title = 'nepeta'
