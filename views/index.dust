@@ -4,6 +4,7 @@
     <title>Nepeta - News Aggregator</title>
 
     <meta charset="UTF-8">
+<<<<<<< HEAD
 
     <script src="webcomponentsjs/webcomponents-lite.js"></script>
     <script>
@@ -17,6 +18,9 @@
     <!-- Style -->
     <link rel="stylesheet" type="text/css" href="css/index.css">
 
+=======
+    <title>{title}</title>
+>>>>>>> feature/utilities_for_items
   </head>
 
   <body>
