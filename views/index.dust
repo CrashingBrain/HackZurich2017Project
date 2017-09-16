@@ -2,10 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Title of the document</title>
+    <title>Nepeta - News Aggregator</title>
+
+    <!-- Style -->
+    <link rel="stylesheet" type="text/css" href="public/css/index.css">
+
   </head>
 
   <body>
-    Helo
+    <header>
+      <leftbar></leftbar>
+      <logo><img src="images/dummyLogo.png" /></logo>
+      <rightbar></rightbar>
+      <search></search>
+    </header>
+
+    <div id="newsFlash">
+      <newscard></newscard>
+    </div>
+
+    <!-- Socket Client -->
   </body>
 </html>
