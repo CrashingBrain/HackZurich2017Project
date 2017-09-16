@@ -9,6 +9,9 @@
 <!-- Outside style (?) -->
 <style is="custom-style" include="shared-style"></style>
 
+<!-- Outside Scripts -->
+<script src="../js/ajax.js"></script>
+
 <dom-module id="nepeta-room">
   <template>
     <style is="custom-style" include="shared-style">
@@ -35,6 +38,7 @@
         newsitems="[[room.items]]"
         references="[[room.references]]"
         tags="[[room.tags]]"
+        location="[[room.location]]"
       ></nepeta-room-data>
       <nepeta-room-posts></nepeta-room-posts>
     </room-main>
@@ -60,6 +64,25 @@
       ready: function() {
         this.room = JSON.parse(this.roomstring);
       },
+
+      attached: function(){
+        let mainItem = this.room.items[0];
+        this.getLocation(mainItem);
+      }
+
+      getLocation: function(mainItem){
+        let mainId = this.room.items[0].versionedguid;
+        
+        let url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + mainId + "&type=http://s.opencalais.com/1/type/er/Geo/City&minScore=0.3&token=N58VNvhjkxrzX/AS8lyotgYjJNxN+mT681kIX5wuiTI="
+        ajaxRequest('GET', url, null, null, function(err, data){
+          if(err){
+            console.log('impossible to get location: '+ err);
+          } else {
+            let location = data.items[0].entities[0].name;
+            this.room.location = location;
+          }
+        });
+      }
     });
   </script>
 </dom-module>
