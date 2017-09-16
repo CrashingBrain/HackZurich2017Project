@@ -1,17 +1,19 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
 
 <dom-module id="nepeta-search">
   <template>
+
     <style>
       :host {
         position: absolute;
         top: 100px;
-        left: 40%;
+        left: 42%;
         display: block;
         width: 30%;
         height: 31px;
         overflow: hidden;
-        box-shadow: 0px 0px 1px #5f5f5f;
+        box-shadow: 0px 0px 1px var(--box-shadow-color);
         border-radius: 4px;
       }
 
@@ -20,7 +22,7 @@
         height: 100%;
         padding-left: 10px;
         padding-right: 10px;
-        color: #949494;
+        color: var(--secondary-font-color);
         font-size: 22px;
         border: none;
       }
@@ -31,7 +33,7 @@
       }
 
       ::-webkit-input-placeholder {
-        color: #bbbbbb;
+        color: var(--placeholder-color);
       }
 
       @media (max-width: 606px) {

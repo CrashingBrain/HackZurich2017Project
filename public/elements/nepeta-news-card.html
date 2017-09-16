@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+
+<dom-module id="nepeta-news-card">
+  <template>
+    <style include="shared-style">
+      :host {
+        display: inline-block;
+        width: 300px;
+        height: 150px;
+        margin: 10px !important;
+        box-shadow: 0px 0px 1px var(--box-shadow-color);
+        background-color: white;
+        border-radius: 4px;
+      }
+    </style>
+
+    <card-title>News Title</card-title>
+    <card-posters>12</card-posters>
+    <card-desc>
+      Here comes the description of the news. Enjoy and read it, since it will
+      never completely fit on the card. This is done on purpose, since news usually are
+      also not that short so that they would fit in a small description.
+    </card-desc>
+    <card-hashtags>#hahaha, #testi, #boh, #another, #Hashtag, #mehehe</card-hashtags>
+    <card-enter-room></card-enter-room>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-news-card'
+    });
+  </script>
+</dom-module>
