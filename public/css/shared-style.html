@@ -2,10 +2,11 @@
   <template>
       <style>
       @import url('https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
-      
+
       * {
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
 
         /* CSS VARIABLES */
         --primary-color: #BF3832; /* bright red */
@@ -13,6 +14,7 @@
         --background-color: #eaeaea; /* bright grey */
         --box-shadow-color: #5f5f5f; /* dark grey */
         --placeholder-color: #bbbbbb; /* medium bright grey */
+        --primary-font-color: #4c4b4b; /* dark grey */
         --secondary-font-color: #949494; /* bright grey */
       }
 
@@ -37,13 +39,17 @@
         z-index: 1;
       }
 
-      logo > img {
-        width: 150px;
+      logo  img {
+        width: 190px;
         border-radius: 100px;
         border-left: solid 20px var(--secondary-color);
         border-top: solid 20px var(--primary-color);
         border-right: solid 20px var(--primary-color);
         border-bottom: solid 20px var(--secondary-color);
+      }
+
+      logo img:hover {
+        cursor: pointer;
       }
 
       rightbar {

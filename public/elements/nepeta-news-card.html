@@ -1,11 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../css/shared-style.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <dom-module id="nepeta-news-card">
   <template>
     <style include="shared-style">
       :host {
-        box-sizing: border-box;
+        position: relative;
         display: inline-block;
         width: 300px;
         height: 150px;
@@ -13,27 +14,80 @@
         padding: 10px !important;
         box-shadow: 0px 0px 1px var(--box-shadow-color);
         background-color: white;
+        color: var(--primary-font-color);
         border-radius: 4px;
       }
 
       card-title {
         display: block;
+        width: 240px;
+        overflow: hidden;
+        color: #BF3832;
         text-align: left;
+        text-overflow: ellipsis;
         font-family: 'Pathway Gothic One', sans-serif;
-        font-size: 20px;
-
+        font-size: 22px;
+        white-space: nowrap;
       }
+
+      card-desc {
+        display: inline-block;
+        width: 280px;
+        height: 50px;
+        text-align: justify;
+        font-size: 13px;
+      }
+
+      card-posts {
+        position: absolute;
+        top: 9px;
+        right: 9px;
+      }
+
+      card-posts > iron-icon {
+        width: 14px;
+        position: relative;
+        bottom: 1px;
+      }
+
+      card-hashtags {
+        display: inline-block;
+        position: absolute;
+        left: 6px;
+        bottom: 14px;
+        width: 256px;
+        overflow: hidden;
+        color: var(--primary-color);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      card-enter-room a {
+        position: absolute;
+        right: 10px;
+        bottom: 13px;
+        color: var(--primary-font-color);
+      }
+
+      card-enter-room a:hover {
+          color: var(--primary-color);
+      }
+
     </style>
 
-    <card-title>News Title</card-title>
-    <card-posters>12</card-posters>
+    <card-title>News Title longerinoVers</card-title>
+    <card-posts>
+      <iron-icon icon="question-answer"></iron-icon><span>12</span>
+    </card-posts>
     <card-desc>
       Here comes the description of the news. Enjoy and read it, since it will
       never completely fit on the card. This is done on purpose, since news usually are
       also not that short so that they would fit in a small description.
     </card-desc>
     <card-hashtags>#hahaha, #testi, #boh, #another, #Hashtag, #mehehe</card-hashtags>
-    <card-enter-room></card-enter-room>
+    <card-enter-room>
+      <a href="/"><iron-icon icon="exit-to-app"></iron-icon></a>
+    </card-enter-room>
 
 
   </template>
