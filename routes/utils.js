@@ -179,14 +179,24 @@ module.exports.openRoom = (newsItem) => {
   let room = new Room(newsItem);
   room.items = [newsItem];
   console.log('saving', newsItem);
+  // get the tags for this room
+  APIutils.doEntitiesRequest(newsItem, (err, entities)=>{
+  	if(err){
+  		console.log('error saving the new room: +' err);
+  	} else {
+  		let tags = APIutils.getEntitiesNames(entities);
+  		room.tags = tags;
 
-  room.save(function(err, saved) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      newsItems[newsItem.id[0]] = saved._id;
-      console.log(saved);
-    }
+  		room.save(function(err, saved) {
+  		  if (err) {
+  		    console.log(err);
+  		  }
+  		  else {
+  		    newsItems[newsItem.id[0]] = saved._id;
+  		    console.log(saved);
+  		  }
+  		});
+  	}
   });
+
 }
