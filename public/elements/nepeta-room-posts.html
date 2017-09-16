@@ -1,8 +1,12 @@
 <link rel="import" href="/polymer/polymer.html">
 <link rel="import" href="/css/shared-style.html">
+<script src="../js/ajax.js"></script>
 
 <!-- Polymer Components -->
 <link rel="import" href="/elements/nepeta-post.html"></link>
+<link rel="import" href="/paper-input/paper-input.html"></link>
+<link rel="import" href="/paper-input/paper-textarea.html"></link>
+<link rel="import" href="/paper-button/paper-button.html"></link>
 
 
 <dom-module id="nepeta-room-posts">
@@ -15,12 +19,35 @@
         color: yellow;
       }
 
-      posts-containter {
+      #parentposts {
+        position: relative;
         display: block;
+      }
+
+      #new-post {
+        position: relative;
+        padding: 15px;
+      }
+
+      #noposts {
+        position: relative;
+        display: block;
+        width: 100%;
+        text-align: center;
       }
     </style>
 
-    <div id="parentposts"></div>
+    <div id="parentposts">
+      <div id="new-post">
+        <paper-input id="username" label="username"></paper-input>
+        <paper-textarea id="message" label="message"></paper-textarea>
+        <paper-button raised class="blue" on-click="_postMessage">post</paper-button>
+      </div>
+
+      <p id="noposts">No posts yet!</p>
+
+      <!-- posts -->
+    </div>
 
   </template>
 
@@ -32,84 +59,96 @@
         posts: {
           type: Array,
           default: [],
+          reflectToAttribute: true,
         },
+        roomid: {
+          type: String,
+        }
       },
 
-      ready: function() {
+      attached: function() {
 
-        this.posts = [{
-          username : "one",
-          message : "hello1",
-          date : Date.now(),
-          replies : [{
-            username : "one.one",
-            message : "hello1.1",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "one.two",
-            message : "hello1.2",
-            date : Date.now(),
-            replies : [{
-              username : "one.two.one",
-              message : "hello1.2.1",
-              date : Date.now(),
-              replies : [{
-                username : "one.two.one.one",
-                message : "hello1.2.1.1",
-                date : Date.now(),
-                replies : [{
-                  username : "one.two.one.one.one",
-                  message : "hello1.2.1.1.1",
-                  date : Date.now(),
-                  replies : [],
-                }],
-              }],
-            }],
-          }],
-        },{
-          username : "two",
-          message : "hello2",
-          date : Date.now(),
-          replies : [],
-        },{
-          username : "three",
-          message : "hello3",
-          date : Date.now(),
-          replies : [{
-            username : "three.one",
-            message : "hello3.1",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "three.two",
-            message : "hello3.2",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "three.three",
-            message : "hello3.3",
-            date : Date.now(),
-            replies : [],
-          }],
-        },{
-          username : "four",
-          message : "hello4",
-          date : Date.now(),
-          replies : [{
-            username : "four.one",
-            message : "hello4.1",
-            date : Date.now(),
-            replies : [],
-          }],
-        }];
+        // this.posts = [{
+        //   username : "one",
+        //   message : "hello1",
+        //   date : Date.now(),
+        //   replies : [{
+        //     username : "one.one",
+        //     message : "hello1.1",
+        //     date : Date.now(),
+        //     replies : [],
+        //   },{
+        //     username : "one.two",
+        //     message : "hello1.2",
+        //     date : Date.now(),
+        //     replies : [{
+        //       username : "one.two.one",
+        //       message : "hello1.2.1",
+        //       date : Date.now(),
+        //       replies : [{
+        //         username : "one.two.one.one",
+        //         message : "hello1.2.1.1",
+        //         date : Date.now(),
+        //         replies : [{
+        //           username : "one.two.one.one.one",
+        //           message : "hello1.2.1.1.1",
+        //           date : Date.now(),
+        //           replies : [],
+        //         }],
+        //       }],
+        //     }],
+        //   }],
+        // },{
+        //   username : "two",
+        //   message : "hello2",
+        //   date : Date.now(),
+        //   replies : [],
+        // },{
+        //   username : "three",
+        //   message : "hello3",
+        //   date : Date.now(),
+        //   replies : [{
+        //     username : "three.one",
+        //     message : "hello3.1",
+        //     date : Date.now(),
+        //     replies : [],
+        //   },{
+        //     username : "three.two",
+        //     message : "hello3.2",
+        //     date : Date.now(),
+        //     replies : [],
+        //   },{
+        //     username : "three.three",
+        //     message : "hello3.3",
+        //     date : Date.now(),
+        //     replies : [],
+        //   }],
+        // },{
+        //   username : "four",
+        //   message : "hello4",
+        //   date : Date.now(),
+        //   replies : [{
+        //     username : "four.one",
+        //     message : "hello4.1",
+        //     date : Date.now(),
+        //     replies : [],
+        //   }],
+        // }];
+
+        if (this.posts.length === 0) {
+          this.$.noposts.style.display = "block";
+          return;
+        }
+        else {
+          this.$.noposts.style.display = "none";
+        }
 
         for (var post of this.posts) {
           var dom_post = document.createElement('nepeta-post');
           dom_post.username = post.username;
           dom_post.message = post.message;
           dom_post.date = post.date;
-          if (post.replies.length > 0) {
+          if (post.replies && post.replies.length > 0) {
             for (var reply of post.replies) {
               var dom_reply = this._createDOMPost(reply);
               dom_post.appendChild(dom_reply);
@@ -125,13 +164,34 @@
         dom_post.username = post.username;
         dom_post.message = post.message;
         dom_post.date = post.date;
-        if (post.replies.length > 0) {
+        if (post.replies && post.replies.length > 0) {
           for (var reply of post.replies) {
             var dom_reply = this._createDOMPost(reply);
             dom_post.appendChild(dom_reply);
           }
         }
         return dom_post;
+      },
+
+      _postMessage: function() {
+        let post_username = this.$.username.value;
+        let post_message = this.$.message.value;
+        if (!post_message) alert("no message");
+        else {
+          var newpost = {
+            username: post_username,
+            message:  post_message,
+            date:     Date.now(),
+          };
+          ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
+            console.log(res);
+            var created_post = this._createDOMPost(res);
+            this.$.parentposts.insertBefore(
+              created_post,
+              this.$.parentposts.firstChild
+            );
+          }.bind(this));
+        }
       },
     });
   </script>
