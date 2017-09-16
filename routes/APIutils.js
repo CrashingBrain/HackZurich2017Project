@@ -113,7 +113,6 @@ function demuxNewsItems(data, error) {
   for(let newsItem of items) {
     let existing = utils.getDuplicateNewsItem(newsItem.guid);
     let itemUrl = 'http://rmb.reuters.com/rmd/rest/json/item?id=' + newsItem.id + '&channel=FES376&token=' + config.reutersToken;
-
     // if new article
     if(!existing) {
       utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
@@ -122,15 +121,14 @@ function demuxNewsItems(data, error) {
         utils.demuxItem(item);
       });
     // if existing article
-    } else if(existing.version < newsItem.version) {
+  } else if(existing.version < newsItem.version) {
       utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
         if(error) return;
         // update room with latest version of this news item
-        //utils.updateNewsItem(item);
+        utils.updateNewsItem(item);
       });
     } else {
       console.log('discarded duplicate', newsItem.guid);
-      });
     }
   }
 }

@@ -75,7 +75,6 @@ function areCommonEntities(mainItem, newItem, threshold, callback){
 
 module.exports.demuxItem = function(item) {
 	var itemId = item.uri;
-  console.log(itemId);
 	Room.find({}, function(err, rooms) {
     if (err) {
       console.log("error finding rooms: ", err);
@@ -161,7 +160,7 @@ Array.prototype.byCount= function(){
 }
 
 // we store the ids of all news items we have in the db also in the `newsItems` object for efficient lookup, no need to query db
-const newsItemsCache = {}; // newsItemID : {room, version}
+var newsItemsCache = {}; // newsItemID : {room, version}
 
 // loads all news items from all rooms into newsItems
 module.exports.seedNewsItems = () => {
@@ -171,7 +170,7 @@ module.exports.seedNewsItems = () => {
     } else if (rooms) {
       for(let room of rooms)
         for(let newsItem of room.items)
-          newsItemsCache[newsItem.uri] = room._id;
+          newsItemsCache[newsItem.uri] = { room: room._id, version: newsItem.version };
     }
   });
 }
@@ -206,14 +205,20 @@ module.exports.openRoom = (newsItem) => {
 }
 
 module.exports.updateNewsItem = function(newsItem) {
-  // TODO
-  Room.findByID(newsItemsCache[newsItem.guid].room, function(err, room) {
+  Room.findById(newsItemsCache[newsItem.uri].room, function(err, room) {
     if (err) {
-      console.log("error finding rooms: " + err);
-    } else if (rooms) {
-      for(let room of rooms)
-        for(let newsItem of room.items)
-          newsItemsCache[newsItem.uri] = room._id;
+      console.log("error finding room: ", err);
+    } else if (room) {
+      room.items = room.items.filter((item) => item.guid !== newsItem.guid);
+      room.items.push(newsItem);
+      room.save(function(err, saved) {
+        if(err) {
+          console.log('error demuxing an Item: '+ err);
+        } else {
+          newsItemsCache[newsItem.uri].version = newsItem.version;
+          console.log('updated ', saved.headline);
+        }
+      });
     }
   });
 }
