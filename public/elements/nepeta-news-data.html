@@ -1,9 +1,14 @@
 <link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
 
 <dom-module id="nepeta-news-data">
   <template>
-    <style>
-
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        background-color: green;
+        height: 50%;
+      }
     </style>
 
     <p>nepeta-news-data</p>
@@ -12,7 +17,7 @@
 
   <script>
     Polymer({
-      is: 'nepeta-news-data'
+      is : 'nepeta-news-data',
     });
   </script>
 </dom-module>
