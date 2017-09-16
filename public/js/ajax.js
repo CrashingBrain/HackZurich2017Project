@@ -1,14 +1,6 @@
-/*  AJAX with XML converter*/
+/*  AJAX */
 
 
-const parseString = require('xml2js').parseString;
-const XMLHttpRequest = require('xhr2');
-const APIutils = require('./APIutils');
-	
-
-	/*
-		Does an Ajax request expecting an XML response but converts it to JSON and parse it to the callback.
-	*/
 	/*
 	 * @param {String} method The method of the AJAX request. One of: "GET", "POST", "PUT", "DELETE".
 	 * @param {String} url The url of the API to call, optionally with parameters.
@@ -16,7 +8,7 @@ const APIutils = require('./APIutils');
 	 * @param {JSON} data The data in the JSON format to be sent to the server. It must be null if there are no data.
 	 * @param {Function} callback The function to call when the response is ready.
 	 */
-	module.exports.doJSONRequest = function doJSONRequest(method, url, headers, data, callback){
+	function doJSONRequest(method, url, headers, data, callback){
 
 	  //all the arguments are mandatory
 	  if(arguments.length != 5) {
@@ -42,13 +34,8 @@ const APIutils = require('./APIutils');
 	    } else {
 	      if(isJSON(r.responseText))
 	        callback(JSON.parse(r.responseText));
-	      else {
-	      		parseString(r.responseText, function (err, result) {
-	      		    // console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
-	      	  		callback(result);
-	      		});
-	      }
-
+	      else
+	        callback();
 	    }
 	  };
 
@@ -63,26 +50,13 @@ const APIutils = require('./APIutils');
 	  //send the request to the server
 	  r.send(dataToSend);
 
+	  //endRemoveIf(skeleton)
 
 	}
 
-module.exports.areCommonEntities = function(mainItem, newItem, lim){
-	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
-		var mainNames = APIutils.getEntitiesNames(mainEntities);
-		APIutils.doEntitiesRequest(newItem, function(newEntities){
-			var newNames = APIutils.getEntitiesNames(newEntities);
-			if (mainEntities.filter((n) => newEntities.includes(n)).length >= lim){
-				return true;
-			} else {
-				return false;
-			}
-		});
-	});
-}
+	//removeIf(skeleton)
 
-/* Internal functions */
-
-function canJSON(value) {
+	function canJSON(value) {
 	  try {
 	    const jsonString = JSON.stringify(value);
 	    if (!("undefined" == typeof jsonString) 
@@ -96,7 +70,7 @@ function canJSON(value) {
 	  }
 	}
 
-function isJSON(jsonString){
+	function isJSON(jsonString){
 
 	  try {
 	    const o = JSON.parse(jsonString);
@@ -110,10 +84,10 @@ function isJSON(jsonString){
 	  return false;
 	}
 
-function doRequestSetHeaders(r, method, headers){
+	function doRequestSetHeaders(r, method, headers){
 
 	  //set the default JSON header according to the method parameter
-	  // r.setRequestHeader("Accept", "application/json");
+	  r.setRequestHeader("Accept", "application/json");
 
 	  if(method === "POST" || method === "PUT"){
 	    r.setRequestHeader("Content-Type", "application/json");
@@ -145,19 +119,3 @@ function doRequestSetHeaders(r, method, headers){
 	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
 	    }
 	  }
-
-
-// utility for tags
-Array.prototype.byCount= function(){
-    var itm, a= [], L= this.length, o= {};
-    for(var i= 0; i<L; i++){
-        itm= this[i];
-        if(!itm) continue;
-        if(o[itm]== undefined) o[itm]= 1;
-        else ++o[itm];
-    }
-    for(var p in o) a[a.length]= p;
-    return a.sort(function(a, b){
-        return o[b]-o[a];
-    });
-}
