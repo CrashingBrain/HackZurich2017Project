@@ -1,13 +1,6 @@
-/*  AJAX with XML converter*/
+/*  AJAX */
 
 
-const parseString = require('xml2js').parseString;
-const XMLHttpRequest = require('xhr2');
-	
-
-	/*
-		Does an Ajax request expecting an XML response but converts it to JSON and parse it to the callback.
-	*/
 	/*
 	 * @param {String} method The method of the AJAX request. One of: "GET", "POST", "PUT", "DELETE".
 	 * @param {String} url The url of the API to call, optionally with parameters.
@@ -15,7 +8,7 @@ const XMLHttpRequest = require('xhr2');
 	 * @param {JSON} data The data in the JSON format to be sent to the server. It must be null if there are no data.
 	 * @param {Function} callback The function to call when the response is ready.
 	 */
-	module.exports.doXMLRequest = function doXMLRequest(method, url, headers, data, callback){
+	function doJSONRequest(method, url, headers, data, callback){
 
 	  //all the arguments are mandatory
 	  if(arguments.length != 5) {
@@ -41,13 +34,8 @@ const XMLHttpRequest = require('xhr2');
 	    } else {
 	      if(isJSON(r.responseText))
 	        callback(JSON.parse(r.responseText));
-	      else {
-	      		parseString(r.responseText, function (err, result) {
-	      		    console.log(result.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0]);
-	      	  		callback(result);
-	      		});
-	      }
-
+	      else
+	        callback();
 	    }
 	  };
 
@@ -62,48 +50,13 @@ const XMLHttpRequest = require('xhr2');
 	  //send the request to the server
 	  r.send(dataToSend);
 
+	  //endRemoveIf(skeleton)
 
 	}
 
-	/*
-		Returns the title of an Item object as returned from a call of XMLRequest
-	*/
-	module.exports.getItemTitle = function(itemData){
+	//removeIf(skeleton)
 
-		return itemData.newsMessage.itemSet[0].newsItem[0].itemMeta[0].title[0];
-
-	}
-
-	/*
-		Returns relevant meta informations from an Item object as resulte from a call of XMLRequest
-	*/
-	module.exports.getItemMetas = function(itemData){
-		var newsObject = {
-			"headline"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].headline[0],
-			"dateline"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].dateline[0],
-			"by"				: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].by[0],
-			"description"	: itemData.newsMessage.itemSet[0].newsItem[0].contentMeta[0].description[0]
-		}
-
-		return newsObject;
-	}
-
-	/*
-		Returns relevant contents from an Item object as resulte from a call of XMLRequest
-	*/
-	module.exports.getItemContents = function(itemData){
-		// for test article the cntent is saved as an array of lines, so each element of the array 'body[0].p' (from tag 'p') is a string
-		var stringedHTML = JSON.stringify(itemData.newsMessage.itemSet[0].newsItem[0].contentSet[0].inlineXML[0].html[0].body[0]);
-		var newsObject = {
-			"content"	: stringedHTML
-		}
-
-		return newsObject;
-	}
-
-/* Internal functions */
-
-function canJSON(value) {
+	function canJSON(value) {
 	  try {
 	    const jsonString = JSON.stringify(value);
 	    if (!("undefined" == typeof jsonString) 
@@ -117,7 +70,7 @@ function canJSON(value) {
 	  }
 	}
 
-function isJSON(jsonString){
+	function isJSON(jsonString){
 
 	  try {
 	    const o = JSON.parse(jsonString);
@@ -131,10 +84,10 @@ function isJSON(jsonString){
 	  return false;
 	}
 
-function doRequestSetHeaders(r, method, headers){
+	function doRequestSetHeaders(r, method, headers){
 
 	  //set the default JSON header according to the method parameter
-	  // r.setRequestHeader("Accept", "application/json");
+	  r.setRequestHeader("Accept", "application/json");
 
 	  if(method === "POST" || method === "PUT"){
 	    r.setRequestHeader("Content-Type", "application/json");
