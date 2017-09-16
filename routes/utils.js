@@ -70,7 +70,7 @@ const Room = mongoose.model('Room');
 
 	}
 
-module.exports.areCommonEntities = function(mainItem, newItem, lim){
+function areCommonEntities(mainItem, newItem, lim){
 	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
 		var mainNames = APIutils.getEntitiesNames(mainEntities);
 		APIutils.doEntitiesRequest(newItem, function(newEntities){
@@ -82,6 +82,26 @@ module.exports.areCommonEntities = function(mainItem, newItem, lim){
 			}
 		});
 	});
+}
+
+module.exports.demuxItem = function(item){
+	var itemId = item.uri;
+
+	Room.find({}, function(err, rooms) {
+    if (err) {
+      console.log("error finding rooms: " + err);
+    } else {
+      for(let room of rooms){
+      	// only check for common entities in the first room.items
+      	// as it was the original article tha topened the room
+      	// this to avoid the room to diverge too much from initial topic
+      	// intersection_treshold is the number of minimun common entities to consider it part of the same news stream
+      	var intersection_treshold = 5;
+      	if (areCommonEntities(room.items[0], item, intersection_treshold)) {}
+      }
+    }
+  });
+
 }
 
 
@@ -172,13 +192,17 @@ const newsItems = {}; // newsItemID : roomID
 
 // loads all news items from all rooms into newsItems
 module.exports.seedNewsItems = () => {
-  Room.find({}, function(err, room) {
+  Room.find({}, function(err, rooms) {
     if (err) {
       console.log("error finding rooms: " + err);
-    } else if (room && room.items) {
-      for(let newsItem of room.items)
-        newsItem[newsItem.id[0]] = room._id;
-    }
+    } else {
+    		for(let room of rooms){
+    			if (room && room.items) {
+		      	for(let newsItem of room.items)
+		        	newsItem[newsItem.id[0]] = room._id;
+	    		}
+    		}	
+    	}
   });
 }
 
