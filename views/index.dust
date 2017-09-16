@@ -14,7 +14,9 @@
       <leftbar></leftbar>
       <logo><img src="images/dummyLogo.png" /></logo>
       <rightbar></rightbar>
-      <search></search>
+      <search>
+        <input placeholder="#"></input>
+      </search>
     </header>
 
     <div id="newsFlash">
