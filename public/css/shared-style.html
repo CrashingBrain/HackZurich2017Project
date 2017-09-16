@@ -2,7 +2,7 @@
   <template>
       <style>
       @import url('https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
-      
+
       * {
         margin: 0;
         padding: 0;
@@ -37,13 +37,17 @@
         z-index: 1;
       }
 
-      logo > img {
+      logo  img {
         width: 150px;
         border-radius: 100px;
         border-left: solid 20px var(--secondary-color);
         border-top: solid 20px var(--primary-color);
         border-right: solid 20px var(--primary-color);
         border-bottom: solid 20px var(--secondary-color);
+      }
+
+      logo img:hover {
+        cursor: pointer;
       }
 
       rightbar {
