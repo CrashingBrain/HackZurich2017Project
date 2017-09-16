@@ -54,7 +54,8 @@ module.exports.getEntitiesNames = function(entitiesData){
 returns array of entities
 */
 module.exports.doEntitiesRequest = function(itemId, callback){
-	var url = "http://rmb.reuters.com/rmd/rest/xml/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI=";
+	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0&token=0Uar2fCpykUAcAXGXwpsZu2RP/gFZEky81kIX5wuiTI=";
+	console.log('requesting on '+ url);
 	utils.doJSONRequest('GET', url, null, null, callback);
 }
 
