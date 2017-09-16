@@ -3,8 +3,12 @@
 
 const parseString = require('xml2js').parseString;
 const XMLHttpRequest = require('xhr2');
-const APIutils = require('./APIutils');
-	
+
+const config = require('../config');
+const mongoose = require('mongoose');
+mongoose.connect(config.mongoUrl + config.mongoDbName);
+require ('../models/models');
+const Room = mongoose.model('Room');
 
 	/*
 		Does an Ajax request expecting an XML response but converts it to JSON and parse it to the callback.
@@ -54,7 +58,7 @@ const APIutils = require('./APIutils');
 
 	  //set the data
 	  let dataToSend = null;
-	  if (!("undefined" == typeof data) 
+	  if (!("undefined" == typeof data)
 	    && !(data === null))
 	    dataToSend = JSON.stringify(data);
 
@@ -66,18 +70,8 @@ const APIutils = require('./APIutils');
 
 	}
 
-module.exports.areCommonEntities = function(mainItem, newItem, lim){
-	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
-		var mainNames = APIutils.getEntitiesNames(mainEntities);
-		APIutils.doEntitiesRequest(newItem, function(newEntities){
-			var newNames = APIutils.getEntitiesNames(newEntities);
-			if (mainEntities.filter((n) => newEntities.includes(n)).length >= lim){
-				return true;
-			} else {
-				return false;
-			}
-		});
-	});
+module.exports.areCommonEntities = function(item, newItem){
+
 }
 
 /* Internal functions */
@@ -85,7 +79,7 @@ module.exports.areCommonEntities = function(mainItem, newItem, lim){
 function canJSON(value) {
 	  try {
 	    const jsonString = JSON.stringify(value);
-	    if (!("undefined" == typeof jsonString) 
+	    if (!("undefined" == typeof jsonString)
 	      && !(jsonString === null)
 	      && !(jsonString == typeof String))
 	      return true;
@@ -120,7 +114,7 @@ function doRequestSetHeaders(r, method, headers){
 	  }
 
 	  //set the additional headers
-	  if (!("undefined" == typeof headers) 
+	  if (!("undefined" == typeof headers)
 	    && !(headers === null)){
 
 	    for(header in headers){
@@ -139,7 +133,7 @@ function doRequestSetHeaders(r, method, headers){
 	  }
 
 	  //verify the data parameter
-	  if (!("undefined" == typeof data) 
+	  if (!("undefined" == typeof data)
 	    && !(data === null))
 	    if(!canJSON(data)) {
 	      throw new Error('Illegal data: ' + data + ". It should be an object that can be serialized as JSON.");
@@ -160,4 +154,39 @@ Array.prototype.byCount= function(){
     return a.sort(function(a, b){
         return o[b]-o[a];
     });
+}
+
+// we store the ids of all news items we have in the db also in the `newsItems` object for efficient lookup, no need to query db
+const newsItems = {}; // newsItemID : roomID
+
+// loads all news items from all rooms into newsItems
+module.exports.seedNewsItems = () => {
+  Room.find({}, function(err, room) {
+    if (err) {
+      console.log("error finding rooms: " + err);
+    } else if (room && room.items) {
+      for(let newsItem of room.items)
+        newsItem[newsItem.id[0]] = room._id;
+    }
+  });
+}
+
+module.exports.isDuplicateNewsItem = (newsItemID) => {
+  return newsItems[newsItemID];
+}
+
+module.exports.openRoom = (newsItem) => {
+  let room = new Room(newsItem);
+  room.items = [newsItem];
+  console.log('saving', newsItem);
+
+  room.save(function(err, saved) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      newsItems[newsItem.id[0]] = saved._id;
+      console.log(saved);
+    }
+  });
 }

@@ -21,7 +21,7 @@ const Room = exports.Claim = new mongoose.Schema({
   headline     :        { type : String, default : "Fake News" },
   postsCount	 :        { type : Number, default : 0 },
   lastPost     :        { type : Date, default : Date.now() },
-  posts		     :        [{ type : ObjectID, ref:"Post" }],
+  posts		     :        [{ type : ObjectID, ref:"Post"} ],
   items		     : 				{ type : Array, "default" : [] },
   references	 : 				{ type : Array, "default" : [] },
   tags		     : 				{ type : Array, "default" : [] },
