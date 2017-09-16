@@ -1,0 +1,89 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<dom-module id="nepeta-room-data">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        flex: 1;
+        padding-bottom: 5%;
+        background-color: green;
+      }
+
+      .news-tags-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin: 2% 2% 0 2%;
+      }
+
+      tag-tag {
+        padding: 5px;
+        margin: 2px;
+        color: white;
+        background-color: black;
+      }
+
+      .news-article {
+        margin: 2% 2% 0 2%;
+        padding: 10px;
+        border-radius: 2px;
+        background-color: red;
+        color: white;
+      }
+    </style>
+
+    <div class="news-tags-wrapper">
+      <template is="dom-repeat" items="{{tags}}" as="tag">
+        <tag-tag>#{{tag}}</tag-tag>
+      </template>
+    </div>
+
+    <template is="dom-repeat" items="{{newsitems}}">
+        <div class="news-article">{{_getTextFromXHTML(item.body_xhtml)}}</div>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-room-data',
+
+      properties: {
+        headline: {
+          type: String,
+					value: "Headline",
+        },
+        newsitems: {
+          type: Array,
+          value: [],
+        },
+        references: {
+          type: Array,
+          value: [],
+        },
+        tags: {
+          type: Array,
+          value: [],
+        },
+        location: {
+          type: String
+        }
+      },
+
+      ready: function() {},
+
+      _getTextFromXHTML: function(htmlstring) {
+        // var parser = new DOMParser();
+        // var wrappedstring = "<div>" + htmlstring + "</div>";
+        // dom = parser.parseFromString(wrappedstring, "text/xml");
+        var one = htmlstring.replace(/<p>/gi, "");
+        var two = one.replace(/<\/p>/gi, "\n");
+        console.log(two);
+        return two;
+      },
+    });
+  </script>
+</dom-module>

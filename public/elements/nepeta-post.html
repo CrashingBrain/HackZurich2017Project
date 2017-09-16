@@ -1,0 +1,54 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<dom-module id="nepeta-post">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        flex: 1;
+        background: dark-green;
+        border: solid 1px white;
+      }
+
+      #replies {
+        padding: 5px 5px 5px 10px;
+      }
+
+      .username, .message, .date {
+        margin: 0;
+        padding: 5px;
+      }
+    </style>
+
+    <p class="username">{{username}}</p>
+    <p class="message">{{message}}</p>
+    <p class="date">{{date}}</p>
+
+    <!-- replies to this post -->
+    <div id="replies">
+      <content></content>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-post',
+
+      properties: {
+        username: {
+          type: String,
+          value: "",
+        },
+        message: {
+          type: String,
+          value: "",
+        },
+        date: {
+          type: Date,
+        }
+      },
+    });
+  </script>
+</dom-module>

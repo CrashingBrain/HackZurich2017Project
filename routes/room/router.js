@@ -23,23 +23,22 @@ router.get('/', function(req, res, next) {
 router.get('/:room_id', function(req, res, next) {
   /* If bad ID return */
   if (!ObjectId.isValid(req.params.room_id)) {
-    //TODO correct, is fake
-    res.render('room', {
-      title : "Nepeta",
-      // room : room_data
-    });
-    // res.sendStatus(400);
+    res.sendStatus(400);
   }
   /* Get room  and populate data */
   else if (req.accepts('text/html')) {
     Room.findById(req.params.room_id)
     .populate('posts')
     .exec(function(err, room_data) {
-      if (err) res.sendStatus(500);
-      else if (room_data) res.render('room', {
-        title : "Nepeta",
-        room : room_data,
-      });
+      if (err) {
+        res.sendStatus(500);
+      }
+      else if (room_data) {
+        res.render('room', {
+          title : "Nepeta",
+          roomstring : JSON.stringify(room_data),
+        });
+      }
       else res.sendStatus(404);
     });
   }

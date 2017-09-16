@@ -1,13 +1,16 @@
 <link rel="import" href="/polymer/polymer.html">
-<link rel="import" href="../css/shared-style.html">
+<link rel="import" href="/css/shared-style.html">
 
 <!-- Polymer Components -->
 <link rel="import" href="/elements/nepeta-header.html"></link>
-<link rel="import" href="/elements/nepeta-news-data.html"></link>
-<link rel="import" href="/elements/nepeta-posts.html"></link>
+<link rel="import" href="/elements/nepeta-room-data.html"></link>
+<link rel="import" href="/elements/nepeta-room-posts.html"></link>
 
 <!-- Outside style (?) -->
 <style is="custom-style" include="shared-style"></style>
+
+<!-- Outside Scripts -->
+<script src="../js/ajax.js"></script>
 
 <dom-module id="nepeta-room">
   <template>
@@ -16,12 +19,32 @@
         display: block;
         width: 100%;
       }
+
+      room-main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        width: 80%;
+        margin: 5% auto;
+      }
     </style>
 
     <nepeta-header></nepeta-header>
 
-    <nepeta-news-data></nepeta-news-data>
-    <nepeta-posts></nepeta-posts>
+    <room-main>
+
+      <nepeta-room-data
+        headline="[[room.headline]]"
+        newsitems="[[room.items]]"
+        references="[[room.references]]"
+        tags="[[room.tags]]"
+        location="[[room.location]]"
+      ></nepeta-room-data>
+
+      <nepeta-room-posts posts="[[room.posts]]"></nepeta-room-posts>
+
+    </room-main>
 
   </template>
 
@@ -30,10 +53,38 @@
       is: 'nepeta-room',
 
       properties: {
+        roomstring: {
+          type: String,
+          value: "",
+          reflectToAttribute: false,
+        },
         room: {
           type: Object,
 					value: {},
         },
+      },
+
+      ready: function() {
+        this.room = JSON.parse(this.roomstring);
+      },
+
+      attached: function(){
+        let mainItem = this.room.items[0];
+        this.getLocation(mainItem);
+      },
+
+      getLocation: function(mainItem){
+        let mainId = this.room.items[0].versionedguid;
+
+        let url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + mainId + "&type=http://s.opencalais.com/1/type/er/Geo/City&minScore=0.3&token=N58VNvhjkxrzX/AS8lyotgYjJNxN+mT681kIX5wuiTI="
+        ajaxRequest('GET', url, null, null, function(err, data){
+          if(err){
+            console.log('impossible to get location: '+ err);
+          } else {
+            let location = data.items[0].entities[0].name;
+            this.room.location = location;
+          }
+        });
       },
     });
   </script>
