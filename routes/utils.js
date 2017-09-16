@@ -65,7 +65,6 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
-
 	/*
 		Returns the title of an Item object as returned from a call of XMLRequest
 	*/
