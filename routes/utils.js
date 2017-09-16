@@ -3,6 +3,7 @@
 
 const parseString = require('xml2js').parseString;
 const XMLHttpRequest = require('xhr2');
+const APIutils = require('APIutils');
 	
 
 	/*
@@ -65,8 +66,18 @@ const XMLHttpRequest = require('xhr2');
 
 	}
 
-module.exports.areCommonEntities = function(item, newItem){
-
+module.exports.areCommonEntities = function(mainItem, newItem, lim){
+	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
+		var mainNames = APIutils.getEntitiesNames(mainEntities);
+		APIutils.doEntitiesRequest(newItem, function(newEntities){
+			var newNames = APIutils.getEntitiesNames(newEntities);
+			if (mainEntities.filter((n) => newEntities.includes(n)).length >= lim){
+				return true;
+			} else {
+				return false;
+			}
+		});
+	});
 }
 
 /* Internal functions */
