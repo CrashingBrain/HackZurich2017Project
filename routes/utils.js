@@ -63,50 +63,57 @@ const Room = mongoose.model('Room');
 	}
 }
 
-function areCommonEntities(mainItem, newItem, lim){
-	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
+function areCommonEntities(mainItem, newItem, threshold, callback){
+	APIutils.doEntitiesRequest(mainItem.versionedguid, function(mainEntities) {
 		var mainNames = APIutils.getEntitiesNames(mainEntities);
-		APIutils.doEntitiesRequest(newItem, function(newEntities){
+		APIutils.doEntitiesRequest(newItem.versionedguid, function(newEntities) {
 			var newNames = APIutils.getEntitiesNames(newEntities);
-			if (mainEntities.filter((n) => newEntities.includes(n)).length >= lim){
-				return true;
-			} else {
-				return false;
-			}
+      let commonTagsCount = mainNames.filter((n) => newNames.includes(n)).length;
+      // console.log('COMMON tags between', mainItem.headline, ' ? ', newItem.headline, ' = ', commonTagsCount);
+			callback(commonTagsCount >= threshold);
 		});
 	});
 }
 
-module.exports.demuxItem = function(item){
+module.exports.demuxItem = function(item) {
 	var itemId = item.uri;
-
 	Room.find({}, function(err, rooms) {
     if (err) {
-      console.log("error finding rooms: " + err);
+      console.log("error finding rooms: ", err);
     } else {
-      for(let room of rooms){
+      for(let i = 0; i < rooms.length; i++) {
+        var processed = false;
+        let room = rooms[i];
       	// only check for common entities in the first room.items
       	// as it was the original article tha topened the room
       	// this to avoid the room to diverge too much from initial topic
       	// intersection_treshold is the number of minimun common entities to consider it part of the same news stream
-      	var intersection_treshold = 5;
-      	if (areCommonEntities(room.items[0], item, intersection_treshold)) {
-      		room.items.push(item);
-      		room.save(function(err, saved){
-      			if(err){
-      				console.log('error demuxing an Item: '+ err);
-      			} else {
-      				console.log('Item entered in ' + saved.headline);
-      			}
-      		});
-      	} else {
-      		console.log('creating new room...');
-      		module.exports.openRoom(item);
-      	}
+      	var intersectionTreshold = 3;
+      	areCommonEntities(room.items[0], item, intersectionTreshold, (areCommon) => {
+          if(processed) return;
+          if(areCommon) {
+            processed = true;
+        		room.items.push(item);
+        		room.save(function(err, saved) {
+        			if(err) {
+        				console.log('error demuxing an Item: '+ err);
+        			} else {
+        				console.log(item.headline,' appended to ', saved.headline);
+        			}
+        		});
+        	} else if(i == rooms.length - 1) {
+        		console.log('creating new room...');
+        		module.exports.openRoom(item);
+        	}
+        });
+      }
+
+      if(rooms.length == 0) {
+        console.log('creating new room...');
+        module.exports.openRoom(item);
       }
     }
   });
-
 }
 
 /* Internal functions */
@@ -155,22 +162,23 @@ Array.prototype.byCount= function(){
 }
 
 // we store the ids of all news items we have in the db also in the `newsItems` object for efficient lookup, no need to query db
-const newsItems = {}; // newsItemID : {room, version}
+var newsItemsCache = {}; // newsItemID : {room, version}
 
 // loads all news items from all rooms into newsItems
 module.exports.seedNewsItems = () => {
-  Room.find({}, function(err, room) {
+  Room.find({}, function(err, rooms) {
     if (err) {
       console.log("error finding rooms: " + err);
-    } else if (room && room.items) {
-      for(let newsItem of room.items)
-        newsItem[newsItem.uri] = room._id;
+    } else if (rooms) {
+      for(let room of rooms)
+        for(let newsItem of room.items)
+          newsItemsCache[newsItem.uri] = { room: room._id, version: newsItem.version };
     }
   });
 }
 
 module.exports.getDuplicateNewsItem = (newsItemID) => {
-  return newsItems[newsItemID];
+  return newsItemsCache[newsItemID];
 }
 
 module.exports.openRoom = (newsItem) => {
@@ -189,11 +197,30 @@ module.exports.openRoom = (newsItem) => {
           console.log('error saving room: ', err);
         }
         else {
-          newsItems[newsItem.uri] = { room: saved._id,
+          newsItemsCache[newsItem.uri] = { room: saved._id,
                                       version: newsItem.version };
           console.log('saved news item:', saved.headline, newsItem.uri);
         }
       });
   	}
+  });
+}
+
+module.exports.updateNewsItem = function(newsItem) {
+  Room.findById(newsItemsCache[newsItem.uri].room, function(err, room) {
+    if (err) {
+      console.log("error finding room: ", err);
+    } else if (room) {
+      room.items = room.items.filter((item) => item.guid !== newsItem.guid);
+      room.items.push(newsItem);
+      room.save(function(err, saved) {
+        if(err) {
+          console.log('error demuxing an Item: '+ err);
+        } else {
+          newsItemsCache[newsItem.uri].version = newsItem.version;
+          console.log('updated ', saved.headline);
+        }
+      });
+    }
   });
 }

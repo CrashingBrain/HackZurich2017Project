@@ -17,7 +17,7 @@ module.exports.getItemTitle = function(itemData){
 /*
 	Returns relevant meta informations from an Item object as resulte from a call of XMLRequest  as JSON
 */
-module.exports.getItemMetas = function(itemData){
+module.exports.getItemMetas = function(itemData) {
 	var newsObject = {
 		"headline"	: itemData.headline,
 		"dateline"	: itemData.dateline,
@@ -38,7 +38,8 @@ module.exports.getItemContents = function(itemData){
 /*
 	Returns array of entities(names) from an entities object as result from a call of XMLRequest as JSON
 */
-module.exports.getEntitiesNames = function(entitiesData){
+module.exports.getEntitiesNames = function(entitiesData) {
+  if(!entitiesData) return [];
 	var names = [];
 	for (let entity of entitiesData.items[0].entities) {
 		if(entity.vtype === "ENTITY") {
@@ -88,7 +89,36 @@ module.exports.pollRecentNews = function(pollingTimeMs) {
   })
 }
 
+function processQueueItem(itemsQueue) {
+  if(itemsQueue.length == 0) return;
+  let newsItem = itemsQueue[0];
+  itemsQueue.splice(0, 1);
 
+  let existing = utils.getDuplicateNewsItem(newsItem.guid);
+  let itemUrl = 'http://rmb.reuters.com/rmd/rest/json/item?id=' + newsItem.id + '&channel=FES376&token=' + config.reutersToken;
+  // if new article
+  if(!existing) {
+    utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
+      if(!error) {
+        // check common tags and either put in existing room or create new one
+        utils.demuxItem(item);
+      }
+      processQueueItem(itemsQueue);
+    });
+      // if existing article
+  } else if(existing.version < newsItem.version) {
+    utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
+      if(!error) {
+        // update room with latest version of this news item
+        utils.updateNewsItem(item);
+      }
+      processQueueItem(itemsQueue);
+    });
+  } else {
+    console.log('discarded duplicate', newsItem.guid);
+    processQueueItem(itemsQueue);
+  }
+}
 function demuxNewsItems(data, error) {
   if(error) return;
   console.log('number of news items: ', data.results.length);
@@ -104,29 +134,12 @@ function demuxNewsItems(data, error) {
           items[j] = null;
         else
           items[i] = null;
+
+        continue;
       }
     }
   }
 
   items = items.filter((item) => item != null );
-
-  for(let newsItem of items) {
-    let existing = utils.getDuplicateNewsItem(newsItem.guid);
-    if(!existing) {
-      // TODO check common topic and put in existing room
-      // or
-      let itemUrl = 'http://rmb.reuters.com/rmd/rest/json/item?id=' + newsItem.id + '&channel=FES376&token=' + config.reutersToken;
-
-      utils.doJSONRequest('GET', itemUrl, null, null, function(item, error) {
-        if(error) return;
-
-        utils.openRoom(item);
-      });
-    } else if(existing.version < newsItem.version) {
-      // TODO update item in room @ existing.room
-      console.log('TODO');
-    } else {
-      console.log('discarded duplicate', newsItem.guid);
-    }
-  }
+  processQueueItem(items);
 }

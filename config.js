@@ -7,7 +7,7 @@ module.exports = {
   /* Server URL */
   url: "http://127.0.0.1:8191",
 
-  reutersToken: 'QsZz+anSFSH0GcqW7N0yp/yXaiFrnSt/81kIX5wuiTI=',
+  reutersToken: '8axRu+WqZAB/oiQBFKv/EIRWdyPT6EEb81kIX5wuiTI=',
 
   /** App */
   /* Port */
