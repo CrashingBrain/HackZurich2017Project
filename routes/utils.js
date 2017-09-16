@@ -202,7 +202,7 @@ module.exports.openRoom = (newsItem) => {
         else {
           newsItemsCache[newsItem.uri] = { room: saved._id,
                                       version: newsItem.version };
-          console.log('saved news item:', saved.headline, newsItem.uri);
+          // console.log('saved news item:', saved.headline, newsItem.uri);
         }
       });
   	}

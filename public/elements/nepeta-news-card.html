@@ -18,29 +18,38 @@
         border-radius: 4px;
       }
 
+      :host a {
+        color: var(--primary-font-color);
+      }
+
       card-title {
         display: block;
-        width: 240px;
+        position: absolute;
+        width: 250px;
         overflow: hidden;
         color: #BF3832;
         text-align: left;
-        text-overflow: ellipsis;
         font-family: 'Pathway Gothic One', sans-serif;
-        font-size: 22px;
-        white-space: nowrap;
+        font-size: 14.5px;
+        letter-spacing: -0.5px;
       }
 
       card-desc {
         display: inline-block;
+        position: absolute;
         width: 280px;
-        height: 50px;
+        left: 10px;
+        top: 48px;
+        height: 72px;
         text-align: justify;
-        font-size: 13px;
+        font-size: 12px;
+        padding-right: 5px;
+        overflow: auto;
       }
 
       card-posts {
         position: absolute;
-        top: 9px;
+        top: 15px;
         right: 9px;
       }
 
@@ -50,51 +59,61 @@
         bottom: 1px;
       }
 
+      card-posts > span {
+        margin-left: 5px;
+      }
+
       card-hashtags {
         display: inline-block;
         position: absolute;
-        left: 6px;
-        bottom: 14px;
-        width: 256px;
+        left: 10px;
+        bottom: 9px;
+        width: 281px;
         overflow: hidden;
-        color: var(--primary-color);
+        color: #BF3832;
+        font-size: 15px;
         text-overflow: ellipsis;
+        word-spacing: 2px;
         white-space: nowrap;
-      }
-
-      card-enter-room a {
-        position: absolute;
-        right: 10px;
-        bottom: 13px;
-        color: var(--primary-font-color);
-      }
-
-      card-enter-room a:hover {
-          color: var(--primary-color);
       }
 
     </style>
 
-    <card-title>News Title longerinoVers</card-title>
-    <card-posts>
-      <iron-icon icon="question-answer"></iron-icon><span>12</span>
-    </card-posts>
-    <card-desc>
-      Here comes the description of the news. Enjoy and read it, since it will
-      never completely fit on the card. This is done on purpose, since news usually are
-      also not that short so that they would fit in a small description.
-    </card-desc>
-    <card-hashtags>#hahaha, #testi, #boh, #another, #Hashtag, #mehehe</card-hashtags>
-    <card-enter-room>
-      <a href="/"><iron-icon icon="exit-to-app"></iron-icon></a>
-    </card-enter-room>
-
+    <a class="card" href="/room/{{news.id}}">
+      <card-title>{{news.title}}</card-title>
+      <card-posts>
+        <iron-icon icon="question-answer"></iron-icon><span>{{news.postsCount}}</span>
+      </card-posts>
+      <card-desc>{{news.description}}</card-desc>
+      <card-hashtags>{{news.tags}}</card-hashtags>
+    </a>
 
   </template>
 
   <script>
     Polymer({
-      is: 'nepeta-news-card'
+      is: 'nepeta-news-card',
+
+      properties: {
+        title: {
+          type: String,
+          value: '',
+          notify: true
+        },
+
+        postsCount: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+
+        hashtags: {
+          type: String,
+          value: '',
+          notify: true
+        }
+      },
+
     });
   </script>
 </dom-module>
