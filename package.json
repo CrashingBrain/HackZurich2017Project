@@ -1,10 +1,12 @@
 {
-  "name": "hackzurich2017project",
+  "name": "nepeta",
   "version": "1.0.0",
   "description": "Reuters news forum rooms aggregator thing",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "DEBUG='nepeta' ./bin/www",
+    "start:dev": "DEBUG='nepeta' nodemon ./bin/www -e html,css,dust,js,json,sh"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,17 @@
   "bugs": {
     "url": "https://github.com/CrashingBrain/HackZurich2017Project/issues"
   },
-  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project#readme"
+  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project#readme",
+  "dependencies": {
+    "adaro": "^1.0.4",
+    "body-parser": "^1.18.1",
+    "debug": "^3.0.1",
+    "express": "^4.15.4",
+    "fs": "0.0.1-security",
+    "logger": "0.0.1",
+    "method-override": "^2.3.9",
+    "mongoose": "^4.11.11",
+    "morgan": "^1.8.2",
+    "path": "^0.12.7"
+  }
 }
