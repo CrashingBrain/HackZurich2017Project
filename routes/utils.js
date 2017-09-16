@@ -63,7 +63,49 @@ const Room = mongoose.model('Room');
 	}
 }
 
-module.exports.areCommonEntities = function(item, newItem){
+function areCommonEntities(mainItem, newItem, lim){
+	APIutils.doEntitiesRequest(mainItem, function(mainEntities){
+		var mainNames = APIutils.getEntitiesNames(mainEntities);
+		APIutils.doEntitiesRequest(newItem, function(newEntities){
+			var newNames = APIutils.getEntitiesNames(newEntities);
+			if (mainEntities.filter((n) => newEntities.includes(n)).length >= lim){
+				return true;
+			} else {
+				return false;
+			}
+		});
+	});
+}
+
+module.exports.demuxItem = function(item){
+	var itemId = item.uri;
+
+	Room.find({}, function(err, rooms) {
+    if (err) {
+      console.log("error finding rooms: " + err);
+    } else {
+      for(let room of rooms){
+      	// only check for common entities in the first room.items
+      	// as it was the original article tha topened the room
+      	// this to avoid the room to diverge too much from initial topic
+      	// intersection_treshold is the number of minimun common entities to consider it part of the same news stream
+      	var intersection_treshold = 5;
+      	if (areCommonEntities(room.items[0], item, intersection_treshold)) {
+      		room.items.push(item);
+      		room.save(function(err, saved){
+      			if(err){
+      				console.log('error demuxing an Item: '+ err);
+      			} else {
+      				console.log('Item entered in ' + saved.headline);
+      			}
+      		});
+      	} else {
+      		console.log('creating new room...');
+      		module.exports.openRoom(item);
+      	}
+      }
+    }
+  });
 
 }
 
