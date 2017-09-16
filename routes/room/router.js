@@ -81,7 +81,7 @@ router.post('/:room_id', function(req, res, next) {
 
         // if true then post is a reply to another post
         // add as reply of parent
-        if (newPost.parent) 
+        if (newPost.parent)
         {
           Post.findById(parent).exec(function(err, post){
             if (err) return next(err);
@@ -117,30 +117,30 @@ router.post('/:room_id', function(req, res, next) {
           });
         } else {
           // no parent. then it's not a reply to another post
-          newPost.save(function(err, saved){
+          newPost.save(function(err, saved) {
             if (err) {
               res.status(400).json({
                 message: "Error saving new post."
               });
-            } else {
+            } else if (saved) {
               // post saved in DB, now add it to the room.
-                room.posts.push(saved._id);
-                room.save(function(err, updatedRoom){
-                  if (err){
-                    res.status(400).json({
-                      message: "Could not save Post in Room. "
-                    });
-                  } else {
-                    res.status(201).json(saved);
-                  }
-                });
-              
+              room.posts.push(saved._id);
+              room.save(function(err, updatedRoom) {
+                if (err) {
+                  res.status(400).json({
+                    message: "Could not save Post in Room. "
+                  });
+                } else {
+                  res.status(201).json(saved);
+                }
+              });
             }
+            else res.status(400);
           });
         }
       }
     });
-    
+
   }
 });
 

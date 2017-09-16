@@ -19,7 +19,7 @@
         color: yellow;
       }
 
-      #parentposts {
+      #wrapper {
         position: relative;
         display: block;
       }
@@ -37,7 +37,7 @@
       }
     </style>
 
-    <div id="parentposts">
+    <div id="wrapper">
       <div id="new-post">
         <paper-input id="username" label="username"></paper-input>
         <paper-textarea id="message" label="message"></paper-textarea>
@@ -46,7 +46,9 @@
 
       <p id="noposts">No posts yet!</p>
 
-      <!-- posts -->
+      <div id="parentposts">
+        <!-- posts -->
+      </div>
     </div>
 
   </template>
@@ -178,11 +180,14 @@
         let post_message = this.$.message.value;
         if (!post_message) alert("no message");
         else {
+          /* create new post */
           var newpost = {
-            username: post_username,
             message:  post_message,
             date:     Date.now(),
           };
+          if (post_username) newpost.username = post_username;
+
+          /* post message and display */
           ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
             console.log(res);
             var created_post = this._createDOMPost(res);
