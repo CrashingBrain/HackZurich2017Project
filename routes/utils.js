@@ -3,7 +3,7 @@
 
 const parseString = require('xml2js').parseString;
 const XMLHttpRequest = require('xhr2');
-
+const APIutils = require('./APIutils')
 const config = require('../config');
 const mongoose = require('mongoose');
 mongoose.connect(config.mongoUrl + config.mongoDbName);
@@ -132,17 +132,26 @@ module.exports.getDuplicateNewsItem = (newsItemID) => {
 }
 
 module.exports.openRoom = (newsItem) => {
-  let room = new Room(newsItem);
-  room.items = [newsItem];
+  // get the tags for this room
+  APIutils.doEntitiesRequest(newsItem.versionedguid, (entities, err) => {
+  	if(err){
+  		console.log('error retrieving room tags: ', err);
+  	} else {
+  		let tags = APIutils.getEntitiesNames(entities);
+      let room = new Room(newsItem);
+      room.items = [newsItem];
+  		room.tags = tags;
 
-  room.save(function(err, saved) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      newsItems[newsItem.uri] = { room: saved._id,
-                                  version: newsItem.version };
-      console.log('saved news item:', saved.headline, newsItem.uri);
-    }
+      room.save(function(err, saved) {
+        if (err) {
+          console.log('error saving room: ', err);
+        }
+        else {
+          newsItems[newsItem.uri] = { room: saved._id,
+                                      version: newsItem.version };
+          console.log('saved news item:', saved.headline, newsItem.uri);
+        }
+      });
+  	}
   });
 }

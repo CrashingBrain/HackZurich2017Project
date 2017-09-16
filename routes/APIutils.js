@@ -124,6 +124,9 @@ function demuxNewsItems(data, error) {
       });
     } else if(existing.version < newsItem.version) {
       // TODO update item in room @ existing.room
+      console.log('TODO');
+    } else {
+      console.log('discarded duplicate', newsItem.guid);
     }
   }
 }
