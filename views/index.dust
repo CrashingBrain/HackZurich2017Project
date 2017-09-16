@@ -27,6 +27,8 @@
       <nepeta-search></nepeta-search>
     </header>
 
+    <nepeta-news></nepeta-news>
+
     <div id="newsFlash">
       <newscard></newscard>
       <newscard></newscard>
