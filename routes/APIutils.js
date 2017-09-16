@@ -71,7 +71,14 @@ module.exports.getLocationEntity = function(entitiesData) {
 returns array of entities
 */
 module.exports.doEntitiesRequest = function(itemId, callback){
-	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0" + '&token=' + config.reutersToken;;
+	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=" + itemId +"&minScore=0.0" + '&token=' + config.reutersToken;
+	utils.doJSONRequest('GET', url, null, null, callback);
+}
+
+/* Given an Item Id performs request for Persons entity in the item
+*/
+module.exports.doPersonEntityRequest = function(itemId, callback){
+	var url = "http://rmb.reuters.com/rmd/rest/json/itemEntities?" + itemId +"&type=http://s.opencalais.com/1/type/em/e/Person&minScore=0.0" + '&token=' + config.reutersToken;
 	utils.doJSONRequest('GET', url, null, null, callback);
 }
 

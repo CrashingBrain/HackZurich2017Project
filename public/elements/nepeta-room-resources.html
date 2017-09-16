@@ -1,0 +1,84 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+<script src="../js/ajax.js"></script>
+
+<dom-module id="nepeta-room-resources">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        flex: 1;
+        padding-bottom: 5%;
+        background-color: green;
+      }
+
+      .news-tags-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin: 2% 2% 0 2%;
+      }
+
+      tag-tag {
+        padding: 5px;
+        margin: 2px;
+        color: white;
+        background-color: black;
+      }
+
+      .news-article {
+        margin: 2% 2% 0 2%;
+        padding: 10px;
+        border-radius: 2px;
+        background-color: red;
+        color: white;
+      }
+    </style>
+
+    <div class="news-tags-wrapper">
+      <template is="dom-repeat" items="{{tags}}" as="tag">
+        <tag-tag>#{{tag}}</tag-tag>
+      </template>
+    </div>
+
+    <template is="dom-repeat" items="{{newsitems}}">
+        <div class="news-article">{{_getTextFromXHTML(item.body_xhtml)}}</div>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-room-resources',
+
+      properties: {
+        MainStory: {
+          type: String // this being the id of the main story
+        },
+        Location: {
+          type: String
+        },
+        people: {
+          type: Array,
+          value: [],
+        }
+      },
+
+      ready: function() {
+        this.getPeople(this.);
+      },
+
+      getPeople: function(){
+        ajaxRequest('GET', '/' + this.MainStory + '/people', null, null, (err, people)=>{
+          if (err){
+            console.log('something something something');
+          } else if (people){
+            
+          }
+        });
+      }
+
+    });
+  </script>
+</dom-module>

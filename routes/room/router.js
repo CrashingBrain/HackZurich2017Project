@@ -9,6 +9,10 @@ const Room = mongoose.model('Room');
 const Post = mongoose.model('Post');
 const ObjectId = mongoose.Types.ObjectId;
 
+/* Custom Utilities */
+const utils = require('../utils.js');
+const APIutils = require('APIutils.js');
+
 /* Create router */
 const router = express.Router();
 
@@ -65,6 +69,22 @@ router.get('/:room_id', function(req, res, next) {
   /* If bad accepts return */
   else {
     res.sendStatus(400);
+  }
+});
+
+/* utility get to have people related to one room for context */
+router.get('/:itemId/people', function(req, res, next){
+  if (req.accepts('text/html')){
+    APIutils.doPersonEntityRequest(req.params.itemId, function(err, people){
+      if (err) {
+        res.sendStatus(500);
+      } else if(people) {
+        let names = APIutils.getEntitiesNames(people);
+        res.status(201).json(names);
+      } else {
+        res.sendStatus(204);
+      }
+    });
   }
 });
 
