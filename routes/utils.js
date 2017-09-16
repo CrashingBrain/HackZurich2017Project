@@ -97,7 +97,16 @@ module.exports.demuxItem = function(item){
       	// this to avoid the room to diverge too much from initial topic
       	// intersection_treshold is the number of minimun common entities to consider it part of the same news stream
       	var intersection_treshold = 5;
-      	if (areCommonEntities(room.items[0], item, intersection_treshold)) {}
+      	if (areCommonEntities(room.items[0], item, intersection_treshold)) {
+      		room.items.push(item);
+      		room.save(function(err, saved){
+      			if(err){
+      				console.log('error demuxing an Item: '+ err);
+      			} else {
+      				console.log('Item entered in ' + saved.headline);
+      			}
+      		});
+      	}
       }
     }
   });
