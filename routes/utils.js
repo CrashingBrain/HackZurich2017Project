@@ -177,6 +177,7 @@ module.exports.isDuplicateNewsItem = (newsItemID) => {
 
 module.exports.openRoom = (newsItem) => {
   let room = new Room(newsItem);
+  room.items = [newsItem];
   console.log('saving', newsItem);
 
   room.save(function(err, saved) {
@@ -185,6 +186,7 @@ module.exports.openRoom = (newsItem) => {
     }
     else {
       newsItems[newsItem.id[0]] = saved._id;
+      console.log(saved);
     }
   });
 }
