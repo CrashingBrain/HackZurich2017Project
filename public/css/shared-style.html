@@ -15,7 +15,6 @@
       }
 
       body {
-        overflow-x: hidden;
         overflow-y: scroll;
         background-color: var(--background-color);
       }
@@ -52,7 +51,6 @@
         right: 0px;
         width: 90%;
         height: 25px;
-        margin-right: -10px;
         background-color: var(--primary-color);
       }
 
@@ -62,6 +60,10 @@
 
       ::-webkit-scrollbar-thumb {
         background-color: var(--secondary-color);
+      }
+
+      ::-webkit-scrollbar-track {
+        background-color: var(--primary-color);
       }
     </style>
   </template>
