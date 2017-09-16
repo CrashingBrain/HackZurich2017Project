@@ -106,6 +106,9 @@ module.exports.demuxItem = function(item){
       				console.log('Item entered in ' + saved.headline);
       			}
       		});
+      	} else {
+      		console.log('creating new room...');
+      		module.exports.openRoom(item);
       	}
       }
     }
