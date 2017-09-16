@@ -16,7 +16,24 @@ router.all('/', middleware.supportedMethods('GET, OPTIONS'));
 
 /* Room no id, return nothing */
 router.get('/', function(req, res, next) {
-  res.text("No room specified").status(404).end();
+  var newsArray;
+  Room.find({}, function(err, rooms) {
+    for (room of rooms) {
+      var news = {
+        title : room.headline,
+        postsCount : room.postsCount,
+        lastPost : room.lastPost,
+        tags : room.tags,
+      }
+      newsArray.description = room.items[0].replace(/<p>/g, '').replace(/</p>/g, '').replace(/' +'/g, ' ');
+      rooms.push(news);
+    }
+    res.status(200).json({
+      statusCode: 200,
+      message: 'sucessfully retrieved news',
+      data: newsArray
+    }).end();
+  });
 });
 
 /* Room id, return that room */

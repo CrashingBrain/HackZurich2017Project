@@ -69,11 +69,8 @@ function getPollToken(callback) {
 
 // Get news items using periodic polling key
 function getPeriodicItems(pollToken) {
-  console.log('polling...');
   let pollingUrl = 'http://rmb.reuters.com/rmd/rest/xml/items?channel=STK567&token=' + config.reutersToken + '&pollToken=' + pollToken;
   utils.doJSONRequest('GET', pollingUrl, null, null, function(data) {
-		console.log(data);
-    console.log(data.results.result[0]);
     for(let newsItem of data.results.result)
       if(!utils.isDuplicateNewsItem(newsItem.id[0])) {
         // TODO check common topic and put in existing room

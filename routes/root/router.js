@@ -23,8 +23,6 @@ router.get('/', function(req, res, next) {
   	var restURL2 = "http://rmb.reuters.com/rmd/rest/json/item?id=tag:reuters.com,2017:newsml_KCN1BQ161:12&token=0Uar2fCpykXbX0cWkkmYwszpfU2YWqWh81kIX5wuiTI=";
   	var entitiesURL = "http://rmb.reuters.com/rmd/rest/json/itemEntities?id=tag:reuters.com,2017:newsml_KCN1BQ161:12&minScore=0.0&token=0Uar2fCpykUMsmzhXT7Na5rCbjxeKz1/81kIX5wuiTI="
   	utils.doJSONRequest('GET', entitiesURL, null, null, function(data){
-  		console.log(data);
-  		console.log(APIutils.getEntitiesNames(data));
   		// console.log(APIutils.getItemTitle(data));
   		// console.log(APIutils.getItemMetas(data));
   		// console.log(APIutils.getItemContents(data));
