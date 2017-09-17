@@ -17,7 +17,7 @@ function formatDate(datestring) {
   return day + ' ' +
     monthNames[monthIndex] + ' ' +
     year + ' at ' +
-    (hours > 10 ? hours : '0' + hours) + ':' +
-    (mins > 10 ? mins : '0' + mins)
+    (hours > 9 ? hours : '0' + hours) + ':' +
+    (mins > 9 ? mins : '0' + mins)
   ;
 }
