@@ -9,15 +9,15 @@
     <style is="custom-style" include="shared-style">
       :host {
         display: block;
-        flex: 0 0 50%;
-        width: 50%;
-        max-width: 50%;
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
         padding-bottom: 5%;
-        background-color: green;
+        /*background-color: green;*/
       }
 
       #headline {
-        padding: 10px;
+        padding: 15px;
         font-size: 2em;
         font-weight: 500;
         color: black;
@@ -35,7 +35,8 @@
         padding: 5px;
         margin: 2px;
         color: white;
-        background-color: black;
+        background-color: var(--box-shadow-color);
+        border-radius: 5px;
       }
     </style>
 
@@ -75,6 +76,12 @@
           type: Array,
           value: [],
         },
+      },
+
+      attached: function() {
+        var rev_items = this.newsitems.reverse();
+        this.newsitems = [];
+        this.newsitems = rev_items;
       },
     });
   </script>
