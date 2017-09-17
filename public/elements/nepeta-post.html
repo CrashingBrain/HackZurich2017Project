@@ -100,6 +100,7 @@
         this.$.closebtn.style.display = "block";
         this.$.replybtn.style.display = "none";
         if (localStorage.username) this.$.username.value = localStorage.username;
+        this.$.message.focus();
       },
 
       _closeReplyForm: function() {
@@ -141,6 +142,8 @@
           /* clear message, leave username, hide form */
           this.$.message.value = "";
           this.$.replyform.style.display = "none";
+          this.$.closebtn.style.display = "none";
+          this.$.replybtn.style.display = "block";
 
           /* post message and display */
           ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
