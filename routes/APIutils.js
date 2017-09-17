@@ -80,12 +80,14 @@ module.exports.doEntitiesRequest = function(itemId, callback){
 function getPollToken(callback) {
   let now = moment().format('YYYY.MM.DD.hh.mm');
   let aMinuteAgo =  moment().utc().subtract(1, 'minute').format('YYYY.MM.DD.hh.mm');
+  console.log('retrieving polling token...');
   let pollingUrl = 'http://rmb.reuters.com/rmd/rest/json/items?channel=FES376&mediaType=T&dateRange=' + aMinuteAgo + '&token=' + config.reutersToken;
   utils.doJSONRequest('GET', pollingUrl, null, null, callback);
 }
 
 // Get news items using periodic polling key
 function getPeriodicItems(pollToken) {
+  console.log('polling...');
   let pollingUrl = 'http://rmb.reuters.com/rmd/rest/json/items?channel=FES376&mediaType=T&token=' + config.reutersToken + '&pollToken=' + pollToken;
   utils.doJSONRequest('GET', pollingUrl, null, null, demuxNewsItems);
 }
