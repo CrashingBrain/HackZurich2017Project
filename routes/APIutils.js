@@ -78,8 +78,7 @@ module.exports.doEntitiesRequest = function(itemId, callback){
 // Get poll token for subsequent real time item requests
 // (see reuters docs @ 4.2.2)
 function getPollToken(callback) {
-  let now = moment().format('YYYY.MM.DD.hh.mm');
-  let aMinuteAgo =  moment().utc().subtract(1, 'minute').format('YYYY.MM.DD.hh.mm');
+  let aMinuteAgo =  moment().utc().subtract(1, 'minute').format('YYYY.MM.DD.HH.mm');
   console.log('retrieving polling token...');
   let pollingUrl = 'http://rmb.reuters.com/rmd/rest/json/items?channel=FES376&mediaType=T&dateRange=' + aMinuteAgo + '&token=' + config.reutersToken;
   utils.doJSONRequest('GET', pollingUrl, null, null, callback);
