@@ -30,6 +30,8 @@
         flex-wrap: wrap;
         align-items: flex-end;
         padding: 15px;
+        background-color: var(--primary-color);
+        color: var(--secondary-font-color);
       }
       #username {
         width: 100%;
@@ -40,13 +42,35 @@
       #post-message {
         flex: 0;
         max-height: 40px;
+        color: var(--primary-color);
+        background-color: var(--accent-color)
+        --paper-button-ink-color: var(--primary-color);
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--accent-color);
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--accent-color) !important;
+        };
+      }
+      #username, #message {
+        --paper-input-container-color: var(--secondary-color);
+        --paper-input-container-focus-color: var(--accent-color);
+        --paper-input-container-input-color: var(--tertiary-font-color);
       }
 
       #noposts {
         position: relative;
         display: block;
         width: 100%;
+        margin: 20% 0;
         text-align: center;
+        font-size: 30;
+        color: var(--primary-font-color);
+      }
+
+      #parentposts {
+        max-height: 40%;
+        overflow-y: scroll;
       }
     </style>
 
