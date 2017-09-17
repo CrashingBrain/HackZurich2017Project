@@ -7,8 +7,11 @@
       :host {
         display: block;
         flex: 1;
-        background: dark-green;
-        border: solid 1px white;
+        margin: 2% 2% 0 2%;
+        border-radius: 7px;
+        border: 1px solid var(--darker-background-color);
+        background-color: var(--primary-color);
+        color: var(--tertiary-font-color);
       }
 
       #data {
@@ -16,10 +19,13 @@
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: space-between;
+        border-radius: 5px 5px 0 0;
+        background-color: var(--darker-background-color);
+        color: var(--primary-font-color);
       }
       .username, .message, .date {
         margin: 0;
-        padding: 5px;
+        padding: 10px;
       }
 
       #messageandreply {
@@ -28,12 +34,39 @@
       #main-message {
 
       }
-      #replybtn, #closebtn {
+      #addreplybtn {
 
       }
 
       #replyform {
         display: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 10px;
+      }
+      #username, #message {
+        width: 100%;
+        flex: 0 0 100%;
+        --paper-input-container-color: var(--secondary-color);
+        --paper-input-container-focus-color: var(--accent-color);
+        --paper-input-container-input-color: var(--tertiary-font-color);
+
+      }
+      #closebtn, #replybtn {
+        width: 20%;
+      }
+      #replybtn {
+        max-height: 40px;
+        color: var(--tertiary-font-color);
+        background-color: var(--accent-color)
+        --paper-button-ink-color: var(--secondary-color);
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--accent-color);
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--accent-color) !important;
+        };
       }
 
       #replies {
@@ -47,14 +80,14 @@
     </div>
     <div id="messageandreply">
       <p class="message" id="main-message">{{message}}</p>
-      <paper-button id="replybtn" class="blue" on-click="_openReplyForm">add reply</paper-button>
-      <paper-button id="closebtn" class="blue" on-click="_closeReplyForm">cancel</paper-button>
+      <paper-button id="addreplybtn" on-click="_openReplyForm">add reply</paper-button>
     </div>
 
     <div id="replyform">
       <paper-input id="username" label="username (optional)"></paper-input>
       <paper-textarea id="message" label="message"></paper-textarea>
-      <paper-button raised class="blue" on-click="_postReply">post</paper-button>
+      <paper-button id="closebtn" on-click="_closeReplyForm">cancel</paper-button>
+      <paper-button id="replybtn" on-click="_postReply" raised>post</paper-button>
     </div>
 
 
@@ -92,13 +125,13 @@
 
       attached: function() {
         this.$.closebtn.style.display = "none";
-        this.$.replybtn.style.display = "block";
+        this.$.addreplybtn.style.display = "block";
       },
 
       _openReplyForm: function() {
-        this.$.replyform.style.display = "block";
+        this.$.replyform.style.display = "flex";
         this.$.closebtn.style.display = "block";
-        this.$.replybtn.style.display = "none";
+        this.$.addreplybtn.style.display = "none";
         if (localStorage.username) this.$.username.value = localStorage.username;
         this.$.message.focus();
       },
@@ -106,7 +139,7 @@
       _closeReplyForm: function() {
         this.$.replyform.style.display = "none";
         this.$.closebtn.style.display = "none";
-        this.$.replybtn.style.display = "block";
+        this.$.addreplybtn.style.display = "block";
       },
 
       _createDOMPost: function(post) {
@@ -114,6 +147,8 @@
         dom_post.username = post.username;
         dom_post.message = post.message;
         dom_post.date = post.date;
+        dom_post.roomid = this.roomid;
+        dom_post._id = post._id;
         if (post.replies && post.replies.length > 0) {
           for (var reply of post.replies) {
             var dom_reply = this._createDOMPost(reply);
@@ -143,7 +178,7 @@
           this.$.message.value = "";
           this.$.replyform.style.display = "none";
           this.$.closebtn.style.display = "none";
-          this.$.replybtn.style.display = "block";
+          this.$.addreplybtn.style.display = "block";
 
           /* post message and display */
           ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
