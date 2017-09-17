@@ -3,7 +3,8 @@
 
 
 <!-- Polymer components -->
-<link rel="import" href="/google-map/google-map.html"></link>
+<link rel="import" href="google-map/google-map.html"></link>
+<link rel="import" href="/google-map/google-map-marker.html"></link>
 <!-- Custom scripts -->
 
 <script src="../js/ajax.js"></script>
@@ -45,10 +46,23 @@
         height: 300px;
         width: 400px;
       }
+
+      #map {
+        height: 400px;
+        width: 100%;
+       }
     </style>
 
     <div class="news-context-wrapper">
-        <google-map id="map" latitude="[[lat]]" longitude="[[lon]]"></google-map>
+      <span>
+      <div id="map"></div>
+        <good-map 
+            latitude="30"
+            longitude="-100" zoom="2"
+            map-options='{"mapTypeId": "satellite"}'>
+              
+            </good-map>
+      </span>
       <span>
         Here goes people
         <template is="dom-repeat" items="{{people}}" as="person">
@@ -77,16 +91,17 @@
         },
         lat: {
           type: Number,
-          observer: "latObserver"
+          // observer: "latObserver"
         },
         lon: {
           type: Number,
-          observer: "lonObserver"
+          // observer: "lonObserver"
         }
       },
 
       attached: function() {
-        this.getCoordinates();
+        // this.getCoordinates();
+        this.initMap();
         this.getPeople();
       },
 
@@ -133,9 +148,40 @@
 
       latObserver: function(){
         let map = document.getElementById('map');
-        map.render();
+        map.latitude = this.lat;
+      },
+      lonObserver: function(){
+        let map = document.getElementById('map');
+        map.longitude = this.lon;
+      },
+      initMap: function() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
       }
 
     });
   </script>
+<!--   <script>
+      function initMap() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script> -->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHqbpU4WBb9qjPE7PtHnMqsyNqFfpxIRc&callback=initMap">
+    </script>
 </dom-module>
