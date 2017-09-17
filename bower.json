@@ -30,6 +30,8 @@
   "dependencies": {
     "polymer": "^1.7.0",
     "iron-icons": "^2.0.1",
-    "google-map": "GoogleWebComponents/google-map#^2.0.2"
+    "paper-input": "^2.0.2",
+    "paper-button": "^2.0.0",
+    "paper-card": "PolymerElements/paper-card#^2.0.0"
   }
 }

@@ -3,6 +3,9 @@
 
 <!-- Polymer Components -->
 <link rel="import" href="/elements/nepeta-post.html"></link>
+<link rel="import" href="/paper-input/paper-input.html"></link>
+<link rel="import" href="/paper-input/paper-textarea.html"></link>
+<link rel="import" href="/paper-button/paper-button.html"></link>
 
 
 <dom-module id="nepeta-room-posts">
@@ -10,17 +13,80 @@
     <style is="custom-style" include="shared-style">
       :host {
         display: block;
-        flex: 1;
-        background-color: blue;
-        color: yellow;
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
       }
 
-      posts-containter {
+      #wrapper {
+        position: relative;
         display: block;
+      }
+
+      #new-post {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        padding: 15px;
+        background-color: var(--primary-color);
+        color: var(--secondary-font-color);
+      }
+      #username {
+        width: 100%;
+      }
+      #message {
+        flex: 8;
+      }
+      #post-message {
+        flex: 0;
+        max-height: 40px;
+        color: var(--primary-color);
+        background-color: var(--accent-color)
+        --paper-button-ink-color: var(--primary-color);
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--accent-color);
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--accent-color) !important;
+        };
+      }
+      #username, #message {
+        --paper-input-container-color: var(--secondary-color);
+        --paper-input-container-focus-color: var(--accent-color);
+        --paper-input-container-input-color: var(--tertiary-font-color);
+      }
+
+      #noposts {
+        position: relative;
+        display: block;
+        width: 100%;
+        margin: 20% 0;
+        text-align: center;
+        font-size: 30;
+        color: var(--primary-font-color);
+      }
+
+      #parentposts {
+        max-height: 40%;
+        overflow-y: scroll;
       }
     </style>
 
-    <div id="parentposts"></div>
+    <div id="wrapper">
+      <div id="new-post">
+        <paper-input id="username" label="username (optional)"></paper-input>
+        <paper-textarea id="message" maxlength="1000" char-counter="true" label="message"></paper-textarea>
+        <paper-button raised id="post-message" class="blue" on-click="_postMessage">post</paper-button>
+      </div>
+
+      <p id="noposts">No posts yet!</p>
+
+      <div id="parentposts">
+        <!-- posts -->
+      </div>
+    </div>
 
   </template>
 
@@ -32,84 +98,38 @@
         posts: {
           type: Array,
           default: [],
+          reflectToAttribute: true,
         },
+        roomid: {
+          type: String,
+        }
       },
 
-      ready: function() {
+      attached: function() {
 
-        this.posts = [{
-          username : "one",
-          message : "hello1",
-          date : Date.now(),
-          replies : [{
-            username : "one.one",
-            message : "hello1.1",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "one.two",
-            message : "hello1.2",
-            date : Date.now(),
-            replies : [{
-              username : "one.two.one",
-              message : "hello1.2.1",
-              date : Date.now(),
-              replies : [{
-                username : "one.two.one.one",
-                message : "hello1.2.1.1",
-                date : Date.now(),
-                replies : [{
-                  username : "one.two.one.one.one",
-                  message : "hello1.2.1.1.1",
-                  date : Date.now(),
-                  replies : [],
-                }],
-              }],
-            }],
-          }],
-        },{
-          username : "two",
-          message : "hello2",
-          date : Date.now(),
-          replies : [],
-        },{
-          username : "three",
-          message : "hello3",
-          date : Date.now(),
-          replies : [{
-            username : "three.one",
-            message : "hello3.1",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "three.two",
-            message : "hello3.2",
-            date : Date.now(),
-            replies : [],
-          },{
-            username : "three.three",
-            message : "hello3.3",
-            date : Date.now(),
-            replies : [],
-          }],
-        },{
-          username : "four",
-          message : "hello4",
-          date : Date.now(),
-          replies : [{
-            username : "four.one",
-            message : "hello4.1",
-            date : Date.now(),
-            replies : [],
-          }],
-        }];
+        /* get username if present */
+        if (localStorage.username) {
+          this.$.username.value = localStorage.username;
+        }
 
-        for (var post of this.posts) {
+        if (this.posts.length === 0) {
+          this.$.noposts.style.display = "block";
+          return;
+        }
+        else {
+          this.$.noposts.style.display = "none";
+        }
+
+        var rev_posts = this.posts.reverse();
+
+        for (var post of rev_posts) {
           var dom_post = document.createElement('nepeta-post');
           dom_post.username = post.username;
           dom_post.message = post.message;
           dom_post.date = post.date;
-          if (post.replies.length > 0) {
+          dom_post.roomid = this.roomid;
+          dom_post._id = post._id;
+          if (post.replies && post.replies.length > 0) {
             for (var reply of post.replies) {
               var dom_reply = this._createDOMPost(reply);
               dom_post.appendChild(dom_reply);
@@ -125,13 +145,47 @@
         dom_post.username = post.username;
         dom_post.message = post.message;
         dom_post.date = post.date;
-        if (post.replies.length > 0) {
+        dom_post.roomid = this.roomid;
+        dom_post._id = post._id;
+        if (post.replies && post.replies.length > 0) {
           for (var reply of post.replies) {
             var dom_reply = this._createDOMPost(reply);
             dom_post.appendChild(dom_reply);
           }
         }
         return dom_post;
+      },
+
+      _postMessage: function() {
+        let post_username = this.$.username.value;
+        let post_message = this.$.message.value;
+        if (!post_message) alert("no message");
+        else {
+          /* create new post */
+          var newpost = {
+            message:  post_message,
+            date:     Date.now(),
+          };
+          if (post_username) {
+            newpost.username = post_username;
+          }
+
+          /* clear message, leave username */
+          this.$.message.value = "";
+
+          /* post message and display */
+          ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
+            console.log(res);
+            this.$.noposts.style.display = "none";
+            var created_post = this._createDOMPost(res);
+            this.$.parentposts.insertBefore(
+              created_post,
+              this.$.parentposts.firstChild
+            );
+            localStorage.username = res.username;
+            this.$.username.value = res.username;
+          }.bind(this));
+        }
       },
     });
   </script>

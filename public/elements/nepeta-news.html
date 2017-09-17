@@ -5,47 +5,32 @@
 
 <dom-module id="nepeta-news">
   <template>
-    <style include="shared-style">
-      :host {
-        display: block;
-        box-sizing: border-box;
-        position: relative;
-        left: 8%;
-        width: 970px;
-        margin: 0 auto !important;
-        padding: 0 0 10px 0;
-        text-align: center;
-      }
+    <!-- Outside Scripts -->
+    <script src="../js/ajax.js"></script>
 
-      @media (max-width: 1270px) {
-        :host {
-          width: 700px;
-        }
-      }
+        <style is="custom-style" include="shared-style">
+          host: {
+            display: block;
+            width: 100%;
+          }
 
-      @media (max-width: 900px) {
-        :host {
-          left: 0px;
-        }
-      }
+          room-main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: stretch;
+            width: 80%;
+            margin: 5% auto;
+          }
+        </style>
 
-      @media (max-width: 700px) {
-        :host {
-          width: 400px;
-        }
-      }
+        <nepeta-header></nepeta-header>
 
-      nepeta-news-card:hover {
-        transform: scale(1.2);
-        z-index: 5;
-        transition: 0.5s;
-      }
-    </style>
-
-    <template is="dom-repeat" items="{{newsArray}}">
-      <nepeta-news-card news=[[item]]></nepeta-news-card>
-    </template>
-
+        <room-main>
+          <template is="dom-repeat" items="{{newsArray}}">
+            <nepeta-news-card news=[[item]]></nepeta-news-card>
+          </template>
+        </room-main>
   </template>
 
   <script>
@@ -71,8 +56,13 @@
             hashtagString = hashtagString.substring(0, hashtagString.length - 2);
             news.tags = hashtagString;
           });
+          this.newsArray.sort(this.moreActive);
         }.bind(this));
       },
+
+      moreActive: function(a, b) {
+        return b.postsCount - a.postsCount;
+      }
     });
   </script>
 </dom-module>
