@@ -1,0 +1,68 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../css/shared-style.html">
+<link rel="import" href="nepeta-news-card.html">
+<script src="../js/ajax.js"></script>
+
+<dom-module id="nepeta-news">
+  <template>
+    <!-- Outside Scripts -->
+    <script src="../js/ajax.js"></script>
+
+        <style is="custom-style" include="shared-style">
+          host: {
+            display: block;
+            width: 100%;
+          }
+
+          room-main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: stretch;
+            width: 80%;
+            margin: 0 auto;
+          }
+        </style>
+
+        <nepeta-header></nepeta-header>
+
+        <room-main>
+          <template is="dom-repeat" items="{{newsArray}}">
+            <nepeta-news-card news=[[item]]></nepeta-news-card>
+          </template>
+        </room-main>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-news',
+
+      properties: {
+        newsArray: {
+          type: Array,
+          value: function() { return []; },
+          notify: true
+        }
+      },
+
+      created: function() {
+        ajaxRequest('GET', '/room', {}, {}, function(res) {
+          this.newsArray = res.data;
+          this.newsArray.forEach(function(news) {
+            var hashtagString = '';
+            news.tags.forEach(function(hashtag) {
+              hashtagString += '#' + hashtag + ', ';
+            });
+            hashtagString = hashtagString.substring(0, hashtagString.length - 2);
+            news.tags = hashtagString;
+          });
+          this.newsArray.sort(this.moreActive);
+        }.bind(this));
+      },
+
+      moreActive: function(a, b) {
+        return b.postsCount - a.postsCount;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,61 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/paper-card/paper-card.html"></link>
+
+<dom-module id="nepeta-article">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        margin: 2% 2% 0 2%;
+      }
+    </style>
+
+    <paper-card heading="{{_format(newsitem.firstcreated)}}">
+      <div class="card-content" id="container"></div>
+      <!-- <div class="card-actions">
+        <paper-button>Share</paper-button>
+      </div> -->
+    </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-article',
+
+      properties: {
+        newsitem: {
+          type: String,
+					value: "",
+        },
+      },
+
+      attached: function() {
+        /* create a well formatted article */
+        this.$.container.appendChild(this._getTextFromXHTML(this.newsitem.body_xhtml));
+      },
+
+      _getTextFromXHTML: function(htmlstring) {
+        var parts = htmlstring.split(/<p>|<\/p>|<p\/>/);
+        var wrapper = document.createElement('div');
+
+        for (var str of parts) {
+          if (!str.replace(/\s/g, '').length) continue;
+          else {
+            var par = document.createElement('p');
+            par.innerHTML = str;
+            wrapper.appendChild(par);
+          }
+        }
+        return wrapper;
+      },
+
+      _format: function(date) {
+        return formatDate(date);
+      },
+    });
+  </script>
+</dom-module>

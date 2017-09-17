@@ -1,10 +1,13 @@
 {
-  "name": "hackzurich2017project",
+  "name": "nepeta",
   "version": "1.0.0",
   "description": "Reuters news forum rooms aggregator thing",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "DEBUG='nepeta websocket' ./bin/www",
+    "start:dev": "DEBUG='nepeta websocket' nodemon ./bin/www -e html,css,dust,js,json,sh",
+    "test": "DEBUG='nepeta websocket' node --inspect ./bin/www",
+    "install": "bower install"
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,23 @@
   "bugs": {
     "url": "https://github.com/CrashingBrain/HackZurich2017Project/issues"
   },
-  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project#readme"
+  "homepage": "https://github.com/CrashingBrain/HackZurich2017Project#readme",
+  "dependencies": {
+    "adaro": "^1.0.4",
+    "body-parser": "^1.18.1",
+    "debug": "^3.0.1",
+    "express": "^4.15.4",
+    "fs": "0.0.1-security",
+    "logger": "0.0.1",
+    "method-override": "^2.3.9",
+    "moment": "^2.18.1",
+    "mongoose": "^4.11.11",
+    "morgan": "^1.8.2",
+    "nodemon": "^1.12.1",
+    "path": "^0.12.7",
+    "socket.io": "^2.0.3",
+    "util": "^0.10.3",
+    "xhr2": "^0.1.4",
+    "xml2js": "^0.4.19"
+  }
 }

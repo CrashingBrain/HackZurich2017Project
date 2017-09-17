@@ -1,0 +1,72 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/elements/nepeta-header.html"></link>
+<link rel="import" href="/elements/nepeta-room-data.html"></link>
+<link rel="import" href="/elements/nepeta-room-posts.html"></link>
+
+<!-- Outside style (?) -->
+<style is="custom-style" include="shared-style"></style>
+
+<!-- Outside Scripts -->
+<script src="../js/ajax.js"></script>
+
+<dom-module id="nepeta-room">
+  <template>
+    <style is="custom-style" include="shared-style">
+      host: {
+        display: block;
+        width: 100%;
+      }
+
+      room-main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        width: 80%;
+        margin: 0 auto;
+      }
+    </style>
+
+    <nepeta-header></nepeta-header>
+
+    <room-main>
+
+      <nepeta-room-data
+        headline="[[room.headline]]"
+        newsitems="[[room.items]]"
+        references="[[room.references]]"
+        tags="[[room.tags]]"
+        location="[[room.location]]"
+      ></nepeta-room-data>
+
+      <nepeta-room-posts posts="[[room.posts]]" roomid="[[room._id]]"></nepeta-room-posts>
+
+    </room-main>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-room',
+
+      properties: {
+        roomstring: {
+          type: String,
+          value: "",
+          reflectToAttribute: false,
+        },
+        room: {
+          type: Object,
+					value: {},
+        },
+      },
+
+      ready: function() {
+        this.room = JSON.parse(this.roomstring);
+      }
+    });
+  </script>
+</dom-module>

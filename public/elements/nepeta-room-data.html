@@ -1,0 +1,89 @@
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/css/shared-style.html">
+
+<!-- Polymer Components -->
+<link rel="import" href="/elements/nepeta-article.html"></link>
+
+<dom-module id="nepeta-room-data">
+  <template>
+    <style is="custom-style" include="shared-style">
+      :host {
+        display: block;
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
+        padding-bottom: 5%;
+        overflow-y: scroll;
+        max-height: 60%;
+      }
+
+      #headline {
+        padding: 15px;
+        font-size: 2em;
+        font-weight: 500;
+        color: black;
+      }
+
+      .news-tags-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin: 2% 2% 0 2%;
+      }
+
+      tag-tag {
+        padding: 5px;
+        margin: 2px;
+        color: white;
+        background-color: var(--box-shadow-color);
+        border-radius: 5px;
+      }
+    </style>
+
+    <div id="headline">{{headline}}</div>
+
+    <template is="dom-repeat" items="{{newsitems}}" as="article">
+      <nepeta-article newsitem="{{article}}"></nepeta-article>
+    </template>
+
+    <div class="news-tags-wrapper">
+      <template is="dom-repeat" items="{{tags}}" as="tag">
+        <tag-tag>#{{tag}}</tag-tag>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is : 'nepeta-room-data',
+
+      properties: {
+        headline: {
+          type: String,
+					value: "Headline",
+        },
+        newsitems: {
+          type: Array,
+          value: [],
+          reflectToAttribute: true,
+        },
+        references: {
+          type: Array,
+          value: [],
+        },
+        tags: {
+          type: Array,
+          value: [],
+        },
+      },
+
+      attached: function() {
+        var rev_items = this.newsitems.reverse();
+        this.newsitems = [];
+        this.newsitems = rev_items;
+      },
+    });
+  </script>
+</dom-module>
