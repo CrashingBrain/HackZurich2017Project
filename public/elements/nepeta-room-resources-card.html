@@ -8,3 +8,109 @@
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="../paper-styles/typography.html">
+
+
+<dom-module id="nepeta-room-resources-card">
+  <template>
+  <style is="custom-style">
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    :host {
+      width: 40%;
+      min-width: 135px;
+      margin: 1em 0;
+    }
+
+    .cafe-header { @apply --paper-font-headline; }
+    .cafe-light { color: var(--paper-grey-600); }
+    .cafe-location {
+      float: right;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+    .cafe-reserve, .cafe-reserve > a {
+      color: var(--primary-color) !important;
+    }
+
+    .tags {
+      max-width: 500px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    iron-icon.flame {
+      --iron-icon-width: 16px;
+      --iron-icon-height: 16px;
+      color: var(--google-blue-500);
+    }
+
+  </style>
+
+  <paper-card>
+    <div class="card-content">
+      <div class="cafe-header">{{news.title}}
+        <div class="cafe-location cafe-light">
+          <iron-icon icon="communication:location-on"></iron-icon>
+          <span>{{_renderLocation(news.location)}}</span>
+        </div>
+      </div>
+
+              <span>{{news.itemsCount}} updates, {{news.postsCount}} posts</span>
+      <div class="cafe-rating">
+
+        <template is="dom-repeat" items="[[ _renderFlames(news.postsCount) ]]">
+          <iron-icon class="flame" icon="social:whatshot"></iron-icon>
+        </template>
+      </div>
+      <p class="cafe-light tags">{{news.tags}}</p>
+    </div>
+    <div class="card-actions">
+      <div class="horizontal justified">
+        <paper-icon-button icon="icons:event"></paper-icon-button>
+        <paper-button class="cafe-reserve"><a href="/room/{{news.id}}" style="text-decoration:none; color:black;">Explore and discuss</a></paper-button>
+      </div>
+    </div>
+  </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nepeta-news-card',
+
+      properties: {
+        title: {
+          type: String,
+          value: '',
+          notify: true
+        },
+
+        postsCount: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+
+        hashtags: {
+          type: String,
+          value: '',
+          notify: true
+        }
+      },
+
+      _renderFlames: function(postsCount) {
+        return new Array(Math.ceil(postsCount / 10))
+      },
+
+      _renderLocation: function(location) {
+        return location.replace(/,/g, ', ');
+      }
+
+    });
+  </script>
+</dom-module>
