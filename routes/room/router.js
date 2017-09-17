@@ -23,7 +23,9 @@ router.get('/', function(req, res, next) {
       var news = {
         title : room.headline,
         postsCount : room.postsCount,
+        location: room.location,
         lastPost : room.lastPost,
+        itemsCount : room.items.length,
         tags : room.tags,
         id : room._id
       }

@@ -1,92 +1,81 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../css/shared-style.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icons/social-icons.html">
+<link rel="import" href="../iron-icons/communication-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-styles/color.html">
+<link rel="import" href="../paper-styles/typography.html">
+
 
 <dom-module id="nepeta-news-card">
   <template>
-    <style include="shared-style">
-      :host {
-        position: relative;
-        display: inline-block;
-        width: 300px;
-        height: 150px;
-        margin: 10px !important;
-        padding: 10px !important;
-        box-shadow: 0px 0px 1px var(--box-shadow-color);
-        background-color: white;
-        color: var(--primary-font-color);
-        border-radius: 4px;
-      }
+  <style is="custom-style">
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-      :host a {
-        color: var(--primary-font-color);
-      }
+    :host {
+      width: 40%;
+      min-width: 500px;
+      margin: 1em 0;
+    }
 
-      card-title {
-        display: block;
-        position: absolute;
-        width: 250px;
-        overflow: hidden;
-        color: #BF3832;
-        text-align: left;
-        font-family: 'Pathway Gothic One', sans-serif;
-        font-size: 14.5px;
-        letter-spacing: -0.5px;
-      }
+    .cafe-header { @apply --paper-font-headline; }
+    .cafe-light { color: var(--paper-grey-600); }
+    .cafe-location {
+      float: right;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+    .cafe-reserve, .cafe-reserve > a {
+      color: var(--primary-color) !important;
+    }
 
-      card-desc {
-        display: inline-block;
-        position: absolute;
-        width: 280px;
-        left: 10px;
-        top: 48px;
-        height: 72px;
-        text-align: justify;
-        font-size: 12px;
-        padding-right: 5px;
-        overflow: auto;
-      }
+    .tags {
+      max-width: 500px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-      card-posts {
-        position: absolute;
-        top: 15px;
-        right: 9px;
-      }
+    iron-icon.flame {
+      --iron-icon-width: 16px;
+      --iron-icon-height: 16px;
+      color: var(--google-blue-500);
+    }
 
-      card-posts > iron-icon {
-        width: 14px;
-        position: relative;
-        bottom: 1px;
-      }
+  </style>
 
-      card-posts > span {
-        margin-left: 5px;
-      }
+  <paper-card>
+    <div class="card-content">
+      <div class="cafe-header">{{news.title}}
+        <div class="cafe-location cafe-light">
+          <iron-icon icon="communication:location-on"></iron-icon>
+          <span>{{_renderLocation(news.location)}}</span>
+        </div>
+      </div>
 
-      card-hashtags {
-        display: inline-block;
-        position: absolute;
-        left: 10px;
-        bottom: 9px;
-        width: 281px;
-        overflow: hidden;
-        color: #BF3832;
-        font-size: 15px;
-        text-overflow: ellipsis;
-        word-spacing: 2px;
-        white-space: nowrap;
-      }
+              <span>{{news.itemsCount}} updates, {{news.postsCount}} posts</span>
+      <div class="cafe-rating">
 
-    </style>
-
-    <a class="card" href="/room/{{news.id}}">
-      <card-title>{{news.title}}</card-title>
-      <card-posts>
-        <iron-icon icon="question-answer"></iron-icon><span>{{news.postsCount}}</span>
-      </card-posts>
-      <card-desc>{{news.description}}</card-desc>
-      <card-hashtags>{{news.tags}}</card-hashtags>
-    </a>
+        <template is="dom-repeat" items="[[ _renderFlames(news.postsCount) ]]">
+          <iron-icon class="flame" icon="social:whatshot"></iron-icon>
+        </template>
+      </div>
+      <p class="cafe-light tags">{{news.tags}}</p>
+    </div>
+    <div class="card-actions">
+      <div class="horizontal justified">
+        <paper-icon-button icon="icons:event"></paper-icon-button>
+        <paper-button class="cafe-reserve"><a href="/room/{{news.id}}" style="text-decoration:none; color:black;">Explore and discuss</a></paper-button>
+      </div>
+    </div>
+  </paper-card>
 
   </template>
 
@@ -113,6 +102,14 @@
           notify: true
         }
       },
+
+      _renderFlames: function(postsCount) {
+        return new Array(Math.ceil(postsCount / 10))
+      },
+
+      _renderLocation: function(location) {
+        return location.replace(/,/g, ', ');
+      }
 
     });
   </script>
