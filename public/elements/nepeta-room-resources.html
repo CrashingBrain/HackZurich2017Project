@@ -48,9 +48,7 @@
     </style>
 
     <div class="news-context-wrapper">
-      <span> Here Goes Map
-          <google-map latitude="46.0030832" longitude="8.9485344"></google-map>
-      </span>
+        <google-map id="map" latitude="[[lat]]" longitude="[[lon]]"></google-map>
       <span>
         Here goes people
         <template is="dom-repeat" items="{{people}}" as="person">
@@ -76,14 +74,33 @@
           type: Array,
           value: [],
           reflectToAttribute: true,
+        },
+        lat: {
+          type: Number,
+          observer: "latObserver"
+        },
+        lon: {
+          type: Number,
+          observer: "lonObserver"
         }
       },
 
       attached: function() {
-        console.log("mainstory " + this.MainStory);
-        console.log("location: " + this.location);
+        this.getCoordinates();
         this.getPeople();
       },
+
+      getCoordinates: function(){
+        var coordurl = "http://maps.googleapis.com/maps/api/geocode/json?address=" + this.location + "&sensor=false";
+        ajaxRequest('GET', coordurl, null, null, function(err, response){
+          if (err){
+            console.log('Error obtaining location on the map.');
+          } else if (response){
+            this.set('lat', response.results.geometry.location.lat);
+            this.set('lon', response.results.geometry.location.lon);
+          }
+        });
+      }
 
       getPeople: function(){
         ajaxRequest('GET', '/' + this.MainStory + '/people', null, null, (err, people)=>{
@@ -112,6 +129,11 @@
             }
           }
         });
+      },
+
+      latObserver: function(){
+        let map = document.getElementById('map');
+        map.render();
       }
 
     });
