@@ -11,13 +11,13 @@ const ObjectId = mongoose.Types.ObjectId;
 
 /* Custom Utilities */
 const utils = require('../utils.js');
-const APIutils = require('APIutils.js');
+const APIutils = require('../APIutils.js');
 
 /* Create router */
 const router = express.Router();
 
 /* Supported methods */
-router.all('/', middleware.supportedMethods('GET, OPTIONS'));
+router.all('/', middleware.supportedMethods('GET, OPTIONS, POST'));
 
 /* Room no id, return nothing */
 router.get('/', function(req, res, next) {

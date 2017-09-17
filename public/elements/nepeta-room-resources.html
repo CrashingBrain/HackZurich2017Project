@@ -1,5 +1,11 @@
 <link rel="import" href="/polymer/polymer.html">
 <link rel="import" href="/css/shared-style.html">
+
+
+<!-- Polymer components -->
+<link rel="import" href="/google-map/google-map.html"></link>
+<!-- Custom scripts -->
+
 <script src="../js/ajax.js"></script>
 
 <dom-module id="nepeta-room-resources">
@@ -12,7 +18,7 @@
         background-color: green;
       }
 
-      .news-tags-wrapper {
+      .news-context-wrapper {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -34,17 +40,24 @@
         background-color: red;
         color: white;
       }
+
+      google-map {
+        height: 300px;
+        width: 400px;
+      }
     </style>
 
-    <div class="news-tags-wrapper">
-      <template is="dom-repeat" items="{{tags}}" as="tag">
-        <tag-tag>#{{tag}}</tag-tag>
-      </template>
+    <div class="news-context-wrapper">
+      <span> Here Goes Map
+          <google-map latitude="46.0030832" longitude="8.9485344"></google-map>
+      </span>
+      <span>
+        Here goes people
+        <template is="dom-repeat" items="{{people}}" as="person">
+          <tag-tag>#{{person}}</tag-tag>
+        </template>
+      </span>
     </div>
-
-    <template is="dom-repeat" items="{{newsitems}}">
-        <div class="news-article">{{_getTextFromXHTML(item.body_xhtml)}}</div>
-    </template>
 
   </template>
 
@@ -56,17 +69,20 @@
         MainStory: {
           type: String // this being the id of the main story
         },
-        Location: {
+        location: {
           type: String
         },
         people: {
           type: Array,
           value: [],
+          reflectToAttribute: true,
         }
       },
 
-      ready: function() {
-        this.getPeople(this.);
+      attached: function() {
+        console.log("mainstory " + this.MainStory);
+        console.log("location: " + this.location);
+        this.getPeople();
       },
 
       getPeople: function(){
@@ -74,7 +90,26 @@
           if (err){
             console.log('something something something');
           } else if (people){
-            
+            for (let person of people){
+              (person) => {
+                let url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=" + person + "&redirects=1";
+                ajaxRequest('GET', url, null, null, function(err, extract){
+                  if (err){
+                    console.log('impossible to get person infos.');
+                  } else {
+                    // let text = extract.query.pages;
+                    for (var key in extract.query.pages) {
+                      if (extract.query.pages.hasOwnProperty(key)) {
+                        console.log(key); 
+                        console.log(object[key]); 
+                      }
+                    }
+                    // let personextract = {"name": person, "extract": text};
+                    // this.push('people', personextract);
+                  }
+                });
+              }
+            }
           }
         });
       }

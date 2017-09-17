@@ -5,6 +5,7 @@
 <link rel="import" href="/elements/nepeta-header.html"></link>
 <link rel="import" href="/elements/nepeta-room-data.html"></link>
 <link rel="import" href="/elements/nepeta-room-posts.html"></link>
+<link rel="import" href="/elements/nepeta-room-resources.html"></link>
 
 <!-- Outside style (?) -->
 <style is="custom-style" include="shared-style"></style>
@@ -33,7 +34,10 @@
     <nepeta-header></nepeta-header>
 
     <room-main>
-
+    <nepeta-room-resources
+        MainStory="[[room.items[0].versionedguid]]"
+        location="[[room.location]]"
+      ></nepeta-room-resources>
       <nepeta-room-data
         headline="[[room.headline]]"
         newsitems="[[room.items]]"
