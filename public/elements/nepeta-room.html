@@ -34,9 +34,10 @@
     <nepeta-header></nepeta-header>
 
     <room-main>
-    <google-map fit-to-marker api-key="AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc">
-      <google-map-marker latitude="37.78" longitude="-122.4" draggable="true"></google-map-marker>
-    </google-map>
+    <div class="resources">
+      <center><h4>HEre goes stuff from resources</h4></center>
+    </div>
+    <div>
       <nepeta-room-data
         headline="[[room.headline]]"
         newsitems="[[room.items]]"
@@ -46,7 +47,7 @@
       ></nepeta-room-data>
 
       <nepeta-room-posts posts="[[room.posts]]" roomid="[[room._id]]"></nepeta-room-posts>
-
+    </div>
     </room-main>
 
   </template>

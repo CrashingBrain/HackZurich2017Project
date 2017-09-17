@@ -55,13 +55,10 @@
 
     <div class="news-context-wrapper">
       <span>
-      <div id="map"></div>
-        <good-map 
-            latitude="30"
-            longitude="-100" zoom="2"
-            map-options='{"mapTypeId": "satellite"}'>
-              
-            </good-map>
+      <!-- <div id="map"></div> -->
+      <google-map id="map" latitude="[[lat]]" longitude="[[lon]]">
+        <google-map-marker latitude="[[lat]]" longitude="[[lon]]"></google-map-marker>
+      </google-map>
       </span>
       <span>
         Here goes people
