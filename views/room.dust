@@ -10,6 +10,9 @@
       window.Polymer.dom = 'shadow';
     </script>
 
+    <script src="/js/ajax.js"></script>
+    <script src="/js/client-utils.js"></script>
+
     <!-- Polymer Components -->
     <link rel="import" href="/elements/nepeta-room.html"></link>
 

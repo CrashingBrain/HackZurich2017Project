@@ -1,6 +1,5 @@
 <link rel="import" href="/polymer/polymer.html">
 <link rel="import" href="/css/shared-style.html">
-<script src="../js/ajax.js"></script>
 
 <!-- Polymer Components -->
 <link rel="import" href="/elements/nepeta-post.html"></link>
@@ -14,11 +13,9 @@
     <style is="custom-style" include="shared-style">
       :host {
         display: block;
-        flex: 0 0 50%;
-        width: 50%;
-        max-width: 50%;
-        background-color: blue;
-        color: yellow;
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
       }
 
       #wrapper {
@@ -28,7 +25,21 @@
 
       #new-post {
         position: relative;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
         padding: 15px;
+      }
+      #username {
+        width: 100%;
+      }
+      #message {
+        flex: 8;
+      }
+      #post-message {
+        flex: 0;
+        max-height: 40px;
       }
 
       #noposts {
@@ -42,8 +53,8 @@
     <div id="wrapper">
       <div id="new-post">
         <paper-input id="username" label="username (optional)"></paper-input>
-        <paper-textarea id="message" label="message"></paper-textarea>
-        <paper-button raised class="blue" on-click="_postMessage">post</paper-button>
+        <paper-textarea id="message" maxlength="1000" char-counter="true" label="message"></paper-textarea>
+        <paper-button raised id="post-message" class="blue" on-click="_postMessage">post</paper-button>
       </div>
 
       <p id="noposts">No posts yet!</p>
@@ -133,7 +144,6 @@
           };
           if (post_username) {
             newpost.username = post_username;
-            localStorage.username = post_username;
           }
 
           /* clear message, leave username */
@@ -142,11 +152,14 @@
           /* post message and display */
           ajaxRequest('POST', '/room/' + this.roomid, {}, newpost, function(res) {
             console.log(res);
+            this.$.noposts.style.display = "none";
             var created_post = this._createDOMPost(res);
             this.$.parentposts.insertBefore(
               created_post,
               this.$.parentposts.firstChild
             );
+            localStorage.username = res.username;
+            this.$.username.value = res.username;
           }.bind(this));
         }
       },

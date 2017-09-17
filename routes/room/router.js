@@ -133,6 +133,7 @@ router.post('/:room_id', function(req, res, next) {
             } else if (saved) {
               // post saved in DB, now add it to the room.
               room.posts.push(saved._id);
+              room.postsCount++;
               room.save(function(err, updatedRoom) {
                 if (err) {
                   res.status(400).json({

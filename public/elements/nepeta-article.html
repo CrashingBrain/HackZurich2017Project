@@ -1,20 +1,24 @@
 <link rel="import" href="/polymer/polymer.html">
 <link rel="import" href="/css/shared-style.html">
 
+<!-- Polymer Components -->
+<link rel="import" href="/paper-card/paper-card.html"></link>
+
 <dom-module id="nepeta-article">
   <template>
     <style is="custom-style" include="shared-style">
       :host {
         display: block;
         margin: 2% 2% 0 2%;
-        padding: 10px;
-        border-radius: 2px;
-        background-color: red;
-        color: white;
       }
     </style>
 
-    <p id="container"></p>
+    <paper-card heading="{{_format(newsitem.firstcreated)}}">
+      <div class="card-content" id="container"></div>
+      <!-- <div class="card-actions">
+        <paper-button>Share</paper-button>
+      </div> -->
+    </paper-card>
 
   </template>
 
@@ -47,6 +51,10 @@
           }
         }
         return wrapper;
+      },
+
+      _format: function(date) {
+        return formatDate(date);
       },
     });
   </script>
