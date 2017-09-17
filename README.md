@@ -1,2 +1,2 @@
-# HackZurich2017Project
-(Temporary Name)
+# Nepeta
+News discussions in context @ HackZurich2017.
